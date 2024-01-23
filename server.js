@@ -12,7 +12,8 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "*",
+    origin: "http://103.233.58.121:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     optionsSuccessStatus: 200,
     credentials: true,
   })
