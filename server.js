@@ -12,9 +12,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      return callback(null, true);
-    },
+    origin: "*",
     optionsSuccessStatus: 200,
     credentials: true,
   })
