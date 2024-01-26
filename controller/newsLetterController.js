@@ -43,7 +43,6 @@ exports.getAllNewsLetterUser = CatchAsyncError(async (req, res, next) => {
     // });
     newUser.groups = groupList;
     // newsLetterUsers[i].groups = groupList;
-    console.log(newsLetterUsers);
     newsLetterUsersWithGroups.push(newUser);
     // newsLetterUsersWithGroups.push(newsLetterUsers[i]);
     // console.log(newsLetterUsers);
