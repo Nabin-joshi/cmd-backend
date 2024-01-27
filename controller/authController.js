@@ -20,13 +20,13 @@ async function register(req, res, next) {
     username: Joi.string().min(5).max(30).required(),
     name: Joi.string().max(30).required(),
     email: Joi.string().email().required(),
-    password: Joi.string().pattern(passwordPattern).required(),
+    // password: Joi.string().pattern(passwordPattern).required(),
     confirmPassword: Joi.ref("password"),
   });
 
   // 2. if error in validation -> return error via middleware
-  const { error } = userRegisterSchema.validate(req.body);
-
+  // const { error } = userRegisterSchema.validate(req.body);
+  let error = false;
   if (error) {
     const err = {
       status: 400,
@@ -113,8 +113,8 @@ async function login(req, res, next) {
     password: Joi.string().pattern(passwordPattern),
   });
 
-  const { error } = userLoginSchema.validate(req.body);
-
+  // const { error } = userLoginSchema.validate(req.body);
+  let error = false;
   if (error) {
     const err = {
       status: 400,
