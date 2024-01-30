@@ -24,11 +24,3 @@ module.exports = mongoose.model(
   newsLetterUserGroupMapSchema,
   "news_letter_user_group_map"
 );
-
-console.log(
-  mongoose.model(
-    "NewsLetterUserGroupMap", //if a collection with this name already existed, mongodb will use it, otherwise it will be created
-    newsLetterUserGroupMapSchema, //it define the structure of documents that will be stored in mongoDB
-    "news_letter_user_group_map"
-  )
-);
