@@ -8,15 +8,7 @@ const ErrorHandler = require("./utils/errorHandler");
 const error = require("./utils/error");
 const cors = require("cors");
 
-// const corsOption = {
-//   origin: "http://localhost:3000",
-//   method: "GET, POST",
-//   credentials: true,
-//   optionsSuccessStatus: 204,
-// };
-
 const app = express();
-app.use(cors());
 
 app.use(cookieParser());
 
