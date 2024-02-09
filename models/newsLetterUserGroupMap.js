@@ -6,7 +6,6 @@ const newsLetterUserGroupMapSchema = new mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       ref: "NewsLetterUser",
       required: true,
-      unique: true,
     },
     groupId: {
       type: mongoose.SchemaTypes.ObjectId,
@@ -19,6 +18,7 @@ const newsLetterUserGroupMapSchema = new mongoose.Schema(
   }
 );
 
+newsLetterUserGroupMapSchema.index({ groupId: 1, userId: 1 }, { unique: true });
 module.exports = mongoose.model(
   "NewsLetterUserGroupMap",
   newsLetterUserGroupMapSchema,

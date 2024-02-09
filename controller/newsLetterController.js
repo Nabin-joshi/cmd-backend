@@ -1,3 +1,4 @@
+const { default: axios } = require("axios");
 const newsLetterGroup = require("../models/newsLetterGroup");
 const newsLetterUserGroupMap = require("../models/newsLetterUserGroupMap");
 const newsletterUser = require("../models/newsletterUser");
@@ -139,24 +140,105 @@ exports.getLimitedNewsLetterGroups = CatchAsyncError(async (req, res, next) => {
 });
 
 exports.addNewsUserGroupMap = CatchAsyncError(async (req, res, next) => {
-  const { userId, groupId } = req.body;
-  // const newsLetterUser = await newsletterUser.findOne({ _id: userId });
-  // if (newsLetterUser) {
-  //   return res.status(400).json({
-  //     success: false,
-  //     message: "user is already assigned to some group",
-  //   });
-  // }
-  const userGroupMaps = await newsLetterUserGroupMap.find({ userId });
-  userGroupMaps.forEach((ug, index) => {
-    if (ug.groupId.equals(groupId)) {
-      next(new ErrorHandler(" Group is already assigned to the user ", 500));
-    }
+  const { userIds, groupId } = req.body;
+
+  // const userGroupMaps = await newsLetterUserGroupMap.find({ userId });
+  // userGroupMaps.forEach((ug, index) => {
+  //   if (ug.groupId.equals(groupId)) {
+  //     next(new ErrorHandler(" Group is already assigned to the user ", 500));
+  //   }
+  // });
+
+  const usersToGroupInfo = req.body;
+  const datas = usersToGroupInfo.userIds.map((userId) => {
+    return {
+      groupId: usersToGroupInfo.groupId,
+      userId,
+    };
   });
-  const newUserGroupMapEntity = new newsLetterUserGroupMap({
-    userId,
-    groupId,
+  // const docs = await newsLetterUserGroupMap.insertMany(datas);
+
+  const usersGroupInBulk = datas.map(({ groupId, userId }) => ({
+    updateOne: {
+      filter: { userId, groupId },
+      update: { userId, groupId },
+      upsert: true,
+    },
+  }));
+
+  newsLetterUserGroupMap.bulkWrite(usersGroupInBulk);
+  res
+    .status(201)
+    .json({ success: true, savedNewUserGroupMapEntity: usersGroupInBulk });
+});
+
+var request = require("request");
+const { updateOne } = require("../models/users");
+
+exports.donateUs = CatchAsyncError(async (req, res, next) => {
+  let amount = parseFloat(req.body.amount) * 100;
+  const custInfo = req.body.customer_info;
+  var options = {
+    method: "POST",
+    url: "https://a.khalti.com/api/v2/epayment/initiate/",
+    headers: {
+      Authorization: `key ${process.env.KHALTI_SECRET_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      return_url: "http://localhost:5000/api/newsLetter/donateUs",
+      website_url: "https://localhost:3000/",
+      amount: amount,
+      purchase_order_id: "Order01",
+      purchase_order_name: "test",
+      customer_info: custInfo,
+    }),
+  };
+  request(options, function (error, response) {
+    if (error) throw new Error(error);
+    console.log(response.body);
+    res
+      .status(201)
+      .json({ success: true, responseData: JSON.parse(response.body) });
   });
-  const savedNewUserGroupMapEntity = await newUserGroupMapEntity.save();
-  res.status(201).json({ success: true, savedNewUserGroupMapEntity });
+});
+
+exports.handleKhaltiCallBack = CatchAsyncError(async (req, res, next) => {
+  const {
+    txnId,
+    pidx,
+    amount,
+    mobile,
+    purchase_order_id,
+    purchase_order_name,
+    transaction_id,
+    message,
+  } = req.query;
+  if (message) {
+    return res
+      .status(400)
+      .json({ success: false, error: message || "Error processing khalti" });
+  }
+
+  const headers = {
+    Authorization: `Key ${process.env.KHALTI_SECRET_KEY}`,
+    "Content-Type": "application/json",
+  };
+
+  const response = await axios.post(
+    "https://a.khalti.com/api/v2/epayment/lookup/",
+    { pidx },
+    { headers }
+  );
+  console.log(response.data);
+  if (response.data.status !== "Completed") {
+    return res.status(400).json({ error: "Payment not completed" });
+  }
+  console.log(purchase_order_id, pidx);
+  req.transaction_uuid = purchase_order_id;
+  req.transaction_code = pidx;
+  // const html = `<a href="http://localhost:3000">gotomainpage</a> `;
+  // return res
+  //   .status(201)
+  //   .json({ success: true, transactionInfo: response.data });
 });
