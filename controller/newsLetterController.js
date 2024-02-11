@@ -2,7 +2,7 @@ const { default: axios } = require("axios");
 const newsLetterGroup = require("../models/newsLetterGroup");
 const newsLetterUserGroupMap = require("../models/newsLetterUserGroupMap");
 const newsletterUser = require("../models/newsletterUser");
-const CatchAsyncError = require("../utils/CatchAsyncError");
+const CatchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/errorHandler");
 
 exports.addNewsLetterUser = CatchAsyncError(async (req, res, next) => {

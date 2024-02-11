@@ -10,6 +10,9 @@ const storiesRouter = require("./storiesRoutes");
 const theJourneyRouter = require("./theJourneyRoutes");
 const ourPartnersRouter = require("./ourPartnerRoutes");
 const ourValuesRouter = require("./ourValuesRoutes");
+const serviceRouter = require("./CMS-Routes/serviceRoutes");
+const sliderRoutes = require("./CMS-Routes/sliderRoutes");
+
 // for login register and tokens
 router.use("/auth", authRoutes);
 
@@ -25,4 +28,9 @@ router.use("/ourPartnerRoutes", ourPartnersRouter);
 router.use("/ourValuesRoutes", ourValuesRouter);
 router.use("/stories", storiesRouter);
 router.use("/theJourney", theJourneyRouter);
+
+router.use("/service", serviceRouter);
+
+router.use("/slider", sliderRoutes);
+
 module.exports = router;
