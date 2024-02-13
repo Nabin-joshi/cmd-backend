@@ -19,10 +19,10 @@ const createService = async (req, res, next) => {
 };
 
 const getServiceContent = async (req, res, next) => {
-  const id = req.params.id;
+  const locale = req.params.id;
 
   try {
-    const service = await Service.findOne({ _id: id });
+    const service = await Service.findOne({ locale: locale });
     return res.status(201).json({ service: service });
   } catch (error) {
     return next(error);
@@ -33,19 +33,18 @@ const updateService = async (req, res, next) => {
   // validation if necessary using joi
 
   const getService = req.body;
-  const id = req.params.id;
+  const locale = req.params.id;
 
   let selectedData;
 
   try {
-    selectedData = await Service.findOne({ _id: id });
+    selectedData = await Service.findOne({ locale: locale });
     if (selectedData) {
       await Service.updateOne(
-        { _id: id },
+        { locale: locale },
         {
           author: getService.author,
           content: getService.content,
-          locale: getService.locale,
         }
       );
     }

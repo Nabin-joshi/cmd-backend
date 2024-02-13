@@ -30,6 +30,7 @@ dbConnection();
 
 // to host static file like images
 app.use("/public/images", express.static("public/images"));
+app.use("/public/videos", express.static("public/videos"));
 
 app.use(errorHandler);
 app.use(error);

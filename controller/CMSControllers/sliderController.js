@@ -1,30 +1,17 @@
 const Slider = require("../../models/CMSModels/sliderModel");
+const { BACKEND_SERVER_PATH } = require("../../config/config");
 
 const createSlider = async (req, res, next) => {
-  const { title, content, photo, readMoreButtonColor, author, locale } =
-    req.body;
-
-  //   const buffer = Buffer.from(
-  //     photo.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
-  //     "base64"
-  //   );
-
-  //   const imageName = `${Date.now()}-${author}.png`;
-
-  //   try {
-  //     fs.writeFileSync(`public/images/${imageName}`, buffer);
-  //   } catch (error) {
-  //     return next(error);
-  //   }
+  const { title, content, photo, video, author, locale } = req.body;
 
   let newSlider;
   try {
     newSlider = new Slider({
       title,
-      readMoreButtonColor,
       author,
       content,
       imageName: photo,
+      video: video,
       locale,
     });
     await newSlider.save();
@@ -36,10 +23,16 @@ const createSlider = async (req, res, next) => {
 };
 
 const getSliderContent = async (req, res, next) => {
-  const id = req.params.id;
+  const locale = req.params.locale;
 
   try {
-    const sliderData = await Slider.findOne({ _id: id });
+    const sliderData = await Slider.findOne({ locale: locale });
+    if (sliderData.image && sliderData.image !== "") {
+      sliderData.image = `${BACKEND_SERVER_PATH}/public/images/${sliderData.image}`;
+    }
+    if (sliderData.video && sliderData.video !== "") {
+      sliderData.video = `${BACKEND_SERVER_PATH}/public/videos/${sliderData.video}`;
+    }
     return res.status(201).json({ slider: sliderData });
   } catch (error) {
     return next(error);
@@ -48,21 +41,19 @@ const getSliderContent = async (req, res, next) => {
 
 const updateSliderData = async (req, res, next) => {
   const getData = req.body;
-  const id = req.params.id;
+  const locale = req.params.locale;
 
   let selectedData;
 
   try {
-    selectedData = await Slider.findOne({ _id: id });
+    selectedData = await Slider.findOne({ locale: locale });
     if (selectedData) {
       await Slider.updateOne(
-        { _id: id },
+        { locale: locale },
         {
           title: getData.title,
           author: getData.author,
           content: getData.content,
-          readMoreButtonColor: getData.readMoreButtonColor,
-          locale: getData.locale,
         }
       );
     }
@@ -73,27 +64,57 @@ const updateSliderData = async (req, res, next) => {
 };
 
 const updateSliderImage = async (req, res, next) => {
-  const getData = req.body;
-  const id = req.params.id;
-
-  let selectedData;
-
   try {
-    selectedData = await Slider.findOne({ _id: id });
+    let imageName = "";
+    if (req.file) {
+      imageName = req.file.filename;
+    } else if (req.body.image) {
+      imageName = req.body.image;
+    }
+
+    const locale = req.params.locale;
+
+    selectedData = await Slider.findOne({ locale: locale });
     if (selectedData) {
       await Slider.updateOne(
-        { _id: id },
+        { locale: locale },
         {
-          title: getData.title,
-          author: getData.author,
-          content: getData.content,
-          readMoreButtonColor: getData.readMoreButtonColor,
-          locale: getData.locale,
+          image: imageName,
         }
       );
     }
-    return res.status(201).json({ msg: "Service Updated Successfully" });
+
+    return res.status(200).json({ msg: "Image added successfully" });
   } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+};
+
+const updateSliderVideo = async (req, res, next) => {
+  try {
+    let videoName;
+    if (req.file) {
+      videoName = req.file.filename;
+    } else if (req.body.image) {
+      videoName = req.body.image;
+    }
+
+    const locale = req.params.locale;
+
+    selectedData = await Slider.findOne({ locale: locale });
+    if (selectedData) {
+      await Slider.updateOne(
+        { locale: locale },
+        {
+          video: videoName,
+        }
+      );
+    }
+
+    return res.status(200).json({ msg: "Video added successfully" });
+  } catch (error) {
+    console.error(error);
     return next(error);
   }
 };
@@ -102,6 +123,8 @@ const serviceController = {
   create: createSlider,
   get: getSliderContent,
   update: updateSliderData,
+  updateSliderImage: updateSliderImage,
+  updateSliderVideo: updateSliderVideo,
 };
 
 module.exports = serviceController;
