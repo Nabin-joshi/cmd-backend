@@ -8,7 +8,7 @@ const workSchema = new mongoose.Schema({
 
 const ourWorkSchema = new mongoose.Schema({
   description: String,
-  locale: string,
+  locale: String,
   work: [workSchema],
 });
 

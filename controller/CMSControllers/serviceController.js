@@ -5,21 +5,20 @@ const createService = async (req, res, next) => {
 
   let newService;
   try {
-    newService = new Service({
+    newService = await new Service({
       author,
       content,
       locale,
     });
     await newService.save();
+    return res.status(201).json({ message: "Successfully Added" });
   } catch (error) {
     return next(error);
   }
-
-  return res.status(201).json({ message: "Successfully Added" });
 };
 
 const getServiceContent = async (req, res, next) => {
-  const locale = req.params.id;
+  const locale = req.params.locale;
 
   try {
     const service = await Service.findOne({ locale: locale });
@@ -33,7 +32,7 @@ const updateService = async (req, res, next) => {
   // validation if necessary using joi
 
   const getService = req.body;
-  const locale = req.params.id;
+  const locale = req.params.locale;
 
   let selectedData;
 

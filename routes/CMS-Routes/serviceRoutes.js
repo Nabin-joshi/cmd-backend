@@ -6,8 +6,8 @@ const auth = require("../../middlewares/auth");
 
 router.post("/developer/create", serviceController.create);
 
-router.get("/getService/:id", serviceController.getService);
+router.get("/getService/:locale", serviceController.getService);
 
-router.put("/updateService/:id", serviceController.update);
+router.put("/updateService/:locale", serviceController.update);
 
 module.exports = router;

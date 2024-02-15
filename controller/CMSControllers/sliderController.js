@@ -2,7 +2,7 @@ const Slider = require("../../models/CMSModels/sliderModel");
 const { BACKEND_SERVER_PATH } = require("../../config/config");
 
 const createSlider = async (req, res, next) => {
-  const { title, content, photo, video, author, locale } = req.body;
+  const { title, content, photo, video, author, locale, learnMore } = req.body;
 
   let newSlider;
   try {
@@ -13,6 +13,7 @@ const createSlider = async (req, res, next) => {
       imageName: photo,
       video: video,
       locale,
+      learnMore,
     });
     await newSlider.save();
   } catch (error) {
@@ -54,6 +55,7 @@ const updateSliderData = async (req, res, next) => {
           title: getData.title,
           author: getData.author,
           content: getData.content,
+          learnMore: getData.learnMore,
         }
       );
     }
@@ -110,9 +112,8 @@ const updateSliderVideo = async (req, res, next) => {
           video: videoName,
         }
       );
+      return res.status(200).json({ msg: "Video added successfully" });
     }
-
-    return res.status(200).json({ msg: "Video added successfully" });
   } catch (error) {
     console.error(error);
     return next(error);
