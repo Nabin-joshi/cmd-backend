@@ -33,6 +33,8 @@ app.use(
   "/public/images",
   express.static(path.join(process.env.FILE_PATH, "images"))
 );
+app.use("/public/images", express.static("public/images"));
+app.use("/public/videos", express.static("public/videos"));
 
 // app.use(errorHandler);
 app.use(error);
