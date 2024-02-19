@@ -2,7 +2,14 @@ const express = require("express");
 const ourPartnersRouter = express.Router();
 const ourPartnerController = require("../controller/ourPartnerController");
 const auth = require("../middlewares/auth");
-ourPartnersRouter.post("", ourPartnerController.createOurPartner);
+ourPartnersRouter.post(
+  "/heading",
+  ourPartnerController.createOurPartnerHeading
+);
+ourPartnersRouter.post(
+  "/contents",
+  ourPartnerController.createOurPartnerContent
+);
 
 // get all
 ourPartnersRouter.get("/all", ourPartnerController.getAllOurPartners);

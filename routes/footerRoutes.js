@@ -1,18 +1,10 @@
 const express = require("express");
-const {
-  addFooterDetails,
-  getFooterById,
-  updateFooter,
-  deleteFooter,
-} = require("../controller/footerController");
-
 const footerRouter = express.Router();
+const footer = require("../controller/footerController");
+const auth = require("../middlewares/auth");
 
-footerRouter
-  .route("/footer")
-  .post(addFooterDetails)
-  .get(getFooterById)
-  .put(updateFooter)
-  .delete(deleteFooter);
+footerRouter.post("", footer.addFooterDetails);
+// get all
+footerRouter.get("", footer.getFooter);
 
 module.exports = footerRouter;

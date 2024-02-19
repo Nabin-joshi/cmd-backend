@@ -3,6 +3,7 @@ const { ValidationError } = require("joi");
 const errorHandler = (error, req, res, next) => {
   // default error
   let status = 500;
+  console.log(error);
   let data = {
     message: "Internal Server Error",
   };

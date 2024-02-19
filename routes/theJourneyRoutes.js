@@ -2,7 +2,11 @@ const express = require("express");
 const theJourneyRouter = express.Router();
 const theJourneyController = require("../controller/theJourneyController");
 const auth = require("../middlewares/auth");
-theJourneyRouter.post("", theJourneyController.createTheJourney);
+theJourneyRouter.post("/heading", theJourneyController.createTheJourneyHeading);
+theJourneyRouter.post(
+  "/contents",
+  theJourneyController.createTheJourneyContent
+);
 
 // get all
 theJourneyRouter.get("/all", theJourneyController.getAllTheJourneys);

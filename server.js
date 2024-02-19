@@ -6,7 +6,7 @@ const errorHandler = require("./middlewares/errorHandler");
 const cookieParser = require("cookie-parser");
 const error = require("./utils/error");
 const cors = require("cors");
-
+const path = require("path");
 const app = express();
 
 app.use(cookieParser());
@@ -29,9 +29,12 @@ app.use("/api", router);
 dbConnection();
 
 // to host static file like images
-app.use("/public/images", express.static("public/images"));
+app.use(
+  "/public/images",
+  express.static(path.join(process.env.FILE_PATH, "images"))
+);
 
-app.use(errorHandler);
+// app.use(errorHandler);
 app.use(error);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -7,9 +7,13 @@ const ourPartnerSchema = new mongoose.Schema({
   headingNepali: {
     type: String,
   },
-  icon: {
-    type: String,
-  },
+  contents: [
+    {
+      icon: {
+        type: String,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("OurPartner", ourPartnerSchema);

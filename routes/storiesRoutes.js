@@ -4,12 +4,12 @@ const auth = require("../middlewares/auth");
 
 const storiesController = require("../controller/storiesController");
 storiesRouter.post("", storiesController.createStories);
-
+storiesRouter.post("/heading", storiesController.createStoryHeading);
 // get all
 storiesRouter.get("/all", storiesController.getAllStories);
 
 // get blog by id
-storiesRouter.get("/:id", storiesController.getStoriesById);
+storiesRouter.get("/heading", storiesController.getStoriesHeading);
 
 // update
 storiesRouter.put("/update/:id", storiesController.updateStories);

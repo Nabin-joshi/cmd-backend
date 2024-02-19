@@ -2,7 +2,8 @@ const express = require("express");
 const ourValuesRouter = express.Router();
 const ourValuesController = require("../controller/ourValuesController");
 const auth = require("../middlewares/auth");
-ourValuesRouter.post("", ourValuesController.createOurValues);
+ourValuesRouter.post("/heading", ourValuesController.createOurValuesHeading);
+ourValuesRouter.post("/contents", ourValuesController.createOurValuesContents);
 
 // get all
 ourValuesRouter.get("/all", ourValuesController.getAllOurValues);

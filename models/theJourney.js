@@ -13,19 +13,25 @@ const theJourneySchema = new mongoose.Schema({
   subHeadingNepali: {
     type: String,
   },
-  date: {
-    type: String,
-    required: true,
-  },
-  desc: {
-    type: String,
-  },
-  descNepali: {
-    type: String,
-  },
   color: {
     type: String,
   },
+  contents: [
+    {
+      date: {
+        type: String,
+      },
+      dateNepali: {
+        type: String,
+      },
+      desc: {
+        type: String,
+      },
+      descNepali: {
+        type: String,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("TheJourney", theJourneySchema);

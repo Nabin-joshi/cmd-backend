@@ -7,15 +7,19 @@ const ourValuesSchema = new mongoose.Schema({
   headingNepali: {
     type: String,
   },
-  icon: {
-    type: String,
-  },
-  title: {
-    type: String,
-  },
-  titleNepali: {
-    type: String,
-  },
+  contents: [
+    {
+      icon: {
+        type: String,
+      },
+      title: {
+        type: String,
+      },
+      titleNepali: {
+        type: String,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("OurValues", ourValuesSchema);

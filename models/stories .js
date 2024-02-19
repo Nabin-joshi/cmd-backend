@@ -3,25 +3,31 @@ const mongoose = require("mongoose");
 const storiesSchema = new mongoose.Schema({
   heading: {
     type: String,
-    required: true,
   },
   headingNepali: {
     type: String,
-    required: true,
   },
-  desc: {
+  contents: [
+    {
+      desc: {
+        type: String,
+      },
+      descNepali: {
+        type: String,
+      },
+      image: {
+        type: String,
+      },
+      person: {
+        type: String,
+      },
+      personNepali: {
+        type: String,
+      },
+    },
+  ],
+  readMoreBtnColor: {
     type: String,
-  },
-  descNepali: {
-    type: String,
-  },
-  person: {
-    type: String,
-    required: true,
-  },
-  personNepali: {
-    type: String,
-    required: true,
   },
 });
 

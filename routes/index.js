@@ -20,14 +20,13 @@ router.use("/auth", authRoutes);
 router.use("/blog", blogRoutes);
 
 router.use("/newsLetter", newsLetterRouter);
-router.use("/foot", footerRouter);
 router.use("/oI", ourImpactRoutes);
-router.use("/footerRoutes", footerRouter);
+router.use("/footer", footerRouter);
 router.use("/ourImpacts", ourImpactRoutes);
-router.use("/ourPartnerRoutes", ourPartnersRouter);
-router.use("/ourValuesRoutes", ourValuesRouter);
+router.use("/ourPartners", ourPartnersRouter);
+router.use("/ourvalues", ourValuesRouter);
 router.use("/stories", storiesRouter);
-router.use("/theJourney", theJourneyRouter);
+router.use("/thejourney", theJourneyRouter);
 
 router.use("/service", serviceRouter);
 

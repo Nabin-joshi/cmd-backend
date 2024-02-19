@@ -1,21 +1,20 @@
 const express = require("express");
-const {
-  getAllOurImpacts,
-  createOurImpact,
-  updateOurImpact,
-  deleteOurImpact,
-  getOurImpactById,
-} = require("../controller/ourImpactController");
-const ourImpact = require("../models/ourImpact");
-const ourImpactRoutes = express.Router();
+const ourImpactRouter = express.Router();
+const ourImpactController = require("../controller/ourImpactController");
+const auth = require("../middlewares/auth");
+ourImpactRouter.post("/heading", ourImpactController.createOurImpactHeading);
+ourImpactRouter.post("/contents", ourImpactController.createOurImpactContents);
 
-ourImpactRoutes
-  .route("ourImpact")
-  .get(getAllOurImpacts)
-  .post(createOurImpact)
-  .put(updateOurImpact)
-  .delete(deleteOurImpact);
+// get all
+ourImpactRouter.get("/all", ourImpactController.getAllOurImpacts);
 
-ourImpactRoutes.route("getSingleOurImpact").get(getOurImpactById);
+// get blog by id
+ourImpactRouter.get("/:id", ourImpactController.getOurImpactById);
 
-module.exports = ourImpactRoutes;
+// update
+ourImpactRouter.put("/update/:id", ourImpactController.updateOurImpact);
+
+// delete
+ourImpactRouter.delete("/:id", auth, ourImpactController.deleteOurImpact);
+
+module.exports = ourImpactRouter;
