@@ -12,7 +12,7 @@ router.get("/getSlider/:locale", sliderController.get);
 router.put("/updateSlider/:locale", sliderController.update);
 
 router.put(
-  "/sliderImage/:locale",
+  "/sliderImage",
   getFileUploadMiddleware("public/images", [
     ".jpg",
     ".jpeg",
@@ -23,7 +23,7 @@ router.put(
 );
 
 router.put(
-  "/sliderVideo/:locale",
+  "/sliderVideo",
   getFileUploadMiddleware("public/videos", [".mp4", ".mkv"]).single("video"),
   sliderController.updateSliderVideo
 );
