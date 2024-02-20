@@ -11,13 +11,13 @@ function getFileUploadMiddleware(destination, allowedExtensions) {
       cb(null, destination);
     },
     filename: (req, file, cb) => {
-      const uniqueName = Date.now() + "-" + file.originalname;
+      const uniqueName = Date.now() + "-" + file.originalname.trim();
       cb(null, uniqueName);
     },
   });
 
   const fileFilter = (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
+    const ext = path.extname(file.originalname.trim()).toLowerCase();
     if (!allowedExtensions.includes(ext)) {
       cb(new Error("Only allowed file types are accepted!"), false);
     } else {

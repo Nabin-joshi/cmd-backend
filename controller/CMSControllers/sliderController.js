@@ -70,18 +70,26 @@ const updateSliderImage = async (req, res, next) => {
     let imageName = "";
     if (req.file) {
       imageName = req.file.filename;
-    } else if (req.body.image) {
+    } else if (req.body.image && req.body.image !== "undefined") {
       imageName = req.body.image;
     }
 
-    const locale = req.params.locale;
-
-    selectedData = await Slider.findOne({ locale: locale });
-    if (selectedData) {
+    selectedEnglishData = await Slider.findOne({ locale: "eng" });
+    selectedNepaliData = await Slider.findOne({ locale: "nep" });
+    if (selectedEnglishData) {
       await Slider.updateOne(
-        { locale: locale },
+        { locale: "eng" },
         {
-          image: imageName,
+          image: imageName.trim(),
+        }
+      );
+    }
+
+    if (selectedNepaliData) {
+      await Slider.updateOne(
+        { locale: "nep" },
+        {
+          image: imageName.trim(),
         }
       );
     }
@@ -95,25 +103,32 @@ const updateSliderImage = async (req, res, next) => {
 
 const updateSliderVideo = async (req, res, next) => {
   try {
-    let videoName;
+    let videoName = "";
     if (req.file) {
       videoName = req.file.filename;
-    } else if (req.body.image) {
-      videoName = req.body.image;
+    } else if (req.body.video && req.body.video !== "undefined") {
+      videoName = req.body.video;
     }
 
-    const locale = req.params.locale;
-
-    selectedData = await Slider.findOne({ locale: locale });
-    if (selectedData) {
+    selectedEnglishData = await Slider.findOne({ locale: "eng" });
+    selectedNepaliData = await Slider.findOne({ locale: "nep" });
+    if (selectedEnglishData) {
       await Slider.updateOne(
-        { locale: locale },
+        { locale: "eng" },
         {
-          video: videoName,
+          video: videoName.trim(),
         }
       );
-      return res.status(200).json({ msg: "Video added successfully" });
     }
+    if (selectedNepaliData) {
+      await Slider.updateOne(
+        { locale: "nep" },
+        {
+          video: videoName.trim(),
+        }
+      );
+    }
+    return res.status(200).json({ msg: "Video added successfully" });
   } catch (error) {
     console.error(error);
     return next(error);
