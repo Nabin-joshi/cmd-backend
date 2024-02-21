@@ -2,7 +2,6 @@ const express = require("express");
 const dbConnection = require("./database/index");
 const { PORT } = require("./config/config");
 const router = require("./routes/index");
-const errorHandler = require("./middlewares/errorHandler");
 const cookieParser = require("cookie-parser");
 const error = require("./utils/error");
 const cors = require("cors");

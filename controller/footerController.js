@@ -1,5 +1,5 @@
 const Footer = require("../models/footer");
-const CatchAsyncError = require("../utils/CatchAsyncError");
+const CatchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/errorHandler");
 
 exports.addFooterDetails = CatchAsyncError(async (req, res, next) => {
