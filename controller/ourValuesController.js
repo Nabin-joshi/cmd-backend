@@ -1,5 +1,5 @@
 const OurValues = require("../models/ourValues");
-const CatchAsyncError = require("../utils/CatchAsyncError");
+const CatchAsyncError = require("../utils/catchAsyncError");
 
 const multer = require("multer");
 const ErrorHandler = require("../utils/errorHandler");

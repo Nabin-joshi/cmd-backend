@@ -1,6 +1,6 @@
 const multer = require("multer");
 const Stories = require("../models/stories ");
-const CatchAsyncError = require("../utils/CatchAsyncError");
+const CatchAsyncError = require("../utils/catchAsyncError");
 const path = require("path");
 const ErrorHandler = require("../utils/errorHandler");
 

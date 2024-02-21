@@ -1,6 +1,6 @@
 const multer = require("multer");
 const OurPartner = require("../models/ourPartner");
-const CatchAsyncError = require("../utils/CatchAsyncError");
+const CatchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/errorHandler");
 
 const storage = multer.diskStorage({
