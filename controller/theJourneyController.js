@@ -1,5 +1,5 @@
 const multer = require("multer");
-const CatchAsyncError = require("../utils/CatchAsyncError");
+const CatchAsyncError = require("../utils/catchAsyncError");
 const theJourney = require("../models/theJourney");
 const ErrorHandler = require("../utils/errorHandler");
 

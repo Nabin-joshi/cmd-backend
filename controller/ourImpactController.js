@@ -1,6 +1,6 @@
 const multer = require("multer");
 const OurImpact = require("../models/ourImpact");
-const CatchAsyncError = require("../utils/CatchAsyncError");
+const CatchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/errorHandler");
 const ourImpact = require("../models/ourImpact");
 

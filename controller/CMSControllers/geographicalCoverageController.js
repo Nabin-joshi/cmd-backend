@@ -6,7 +6,7 @@ const createGeographicalCoverage = async (req, res, next) => {
   try {
     let newGeographicalCoverage = new GeographicalCoverage({
       locale,
-      district,
+      districts,
       RMs,
       PNGOs,
       schools,
@@ -42,13 +42,14 @@ const updateGeographicalCoverage = async (req, res, next) => {
       await GeographicalCoverage.updateOne(
         { locale: locale },
         {
-          district: geographicalCoverage.district,
+          districts: geographicalCoverage.districts,
           RMs: geographicalCoverage.RMs,
           PNGOs: geographicalCoverage.PNGOs,
           schools: geographicalCoverage.schools,
         }
       );
     }
+    res.status(201).json({ msg: "Added successfully" });
   } catch (err) {
     return next(err);
   }
