@@ -4,6 +4,7 @@ const ourValuesController = require("../controller/ourValuesController");
 const auth = require("../middlewares/auth");
 ourValuesRouter.post("/heading", ourValuesController.createOurValuesHeading);
 ourValuesRouter.post("/contents", ourValuesController.createOurValuesContents);
+ourValuesRouter.put("", ourValuesController.updateOurValues);
 
 // get all
 ourValuesRouter.get("/all", ourValuesController.getAllOurValues);

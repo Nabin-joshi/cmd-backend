@@ -3,6 +3,7 @@ const Stories = require("../models/stories ");
 const CatchAsyncError = require("../utils/catchAsyncError");
 const path = require("path");
 const ErrorHandler = require("../utils/errorHandler");
+const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -93,14 +94,46 @@ exports.getStoriesById = CatchAsyncError(async (req, res, next) => {
 
 // Update a Stories
 exports.updateStories = CatchAsyncError(async (req, res, next) => {
-  const stories = await Stories.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
+  const objects = req.body;
+  const storyTop = await Stories.findOne();
+  objects.forEach((object, index) => {
+    const matchedStory = storyTop.contents.find((story) =>
+      story._id.equals(object._id)
+    );
+    if (matchedStory) {
+      matchedStory.desc = object.desc;
+      matchedStory.descNepali = object.descNepali;
+      matchedStory.person = object.person;
+      matchedStory.personNepali = object.personNepali;
+      matchedStory.display = object.display;
+      Object.assign(matchedStory, { ...object, image: matchedStory.image });
+
+      // Check if newImage field is present
+      if (object.newImage) {
+        if (matchedStory.image) {
+          const previousImagePath = `${process.env.FILE_PATH}/images/${matchedStory.image}`;
+          try {
+            fs.unlinkSync(previousImagePath);
+          } catch (error) {
+            console.log(fs);
+          }
+        }
+        // Process and store the image
+        const imageData = object.newImage.replace(
+          /^data:image\/\w+;base64,/,
+          ""
+        );
+        const imageBuffer = Buffer.from(imageData, "base64");
+        const imagePath = `${process.env.FILE_PATH}/images/image_${object._id}.jpeg`; // Define the path to store the image
+        fs.writeFileSync(imagePath, imageBuffer); // Write the image buffer to file
+        matchedStory.image = imagePath.split("/").pop(); // Update the image field with the path to the stored image
+      }
+    }
   });
-  if (!stories) {
-    return res.status(404).json({ success: false, error: "Stories not found" });
-  }
-  res.status(200).json({ success: true, data: stories });
+
+  const savedStatus = await storyTop.save();
+
+  res.status(200).json({ success: true, data: savedStatus });
 });
 
 // Delete a Stories

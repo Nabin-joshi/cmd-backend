@@ -1,5 +1,6 @@
 const OurValues = require("../models/ourValues");
 const CatchAsyncError = require("../utils/catchAsyncError");
+const fs = require("fs");
 
 const multer = require("multer");
 const ErrorHandler = require("../utils/errorHandler");
@@ -72,18 +73,53 @@ exports.getOurValuesById = CatchAsyncError(async (req, res, next) => {
 });
 
 // Update a OurValues
-exports.updateOurValues = CatchAsyncError(async (req, res, next) => {
-  const ourValues = await OurValues.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!ourValues) {
-    return res
-      .status(404)
-      .json({ success: false, error: "OurValues not found" });
+
+exports.updateOurValues = async (req, res, next) => {
+  try {
+    const objects = req.body;
+    const ourValuesTop = await OurValues.findOne();
+
+    objects.forEach((object) => {
+      const matchedValue = ourValuesTop.contents.find((value) =>
+        value._id.equals(object._id)
+      );
+
+      if (matchedValue) {
+        matchedValue.title = object.title;
+        matchedValue.titleNepali = object.titleNepali;
+
+        // Check if newIcon field is present
+        if (object.newIcon) {
+          if (matchedValue.icon) {
+            const previousImagePath = `${process.env.FILE_PATH}/images/${matchedValue.icon}`;
+            try {
+              fs.unlinkSync(previousImagePath);
+            } catch (error) {
+              console.error("Error removing previous image:", error);
+            }
+          }
+
+          // Process and store the icon
+          const iconData = object.newIcon.replace(
+            /^data:image\/\w+;base64,/,
+            ""
+          );
+          const iconBuffer = Buffer.from(iconData, "base64");
+          const iconPath = `${process.env.FILE_PATH}/images/icon_${object._id}.jpeg`;
+          fs.writeFileSync(iconPath, iconBuffer);
+          matchedValue.icon = iconPath.split("/").pop();
+        }
+      }
+    });
+
+    const savedStatus = await ourValuesTop.save();
+
+    res.status(200).json({ success: true, data: savedStatus });
+  } catch (error) {
+    console.error("Error updating our values:", error);
+    res.status(500).json({ success: false, error: "Internal server error" });
   }
-  res.status(200).json({ success: true, data: ourValues });
-});
+};
 
 // Delete a OurValues
 exports.deleteOurValues = CatchAsyncError(async (req, res, next) => {

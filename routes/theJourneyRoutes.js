@@ -15,7 +15,7 @@ theJourneyRouter.get("/all", theJourneyController.getAllTheJourneys);
 theJourneyRouter.get("/:id", theJourneyController.getTheJourneyById);
 
 // update
-theJourneyRouter.put("/update/:id", theJourneyController.updateTheJourney);
+theJourneyRouter.put("", theJourneyController.updateTheJourney);
 
 // delete
 theJourneyRouter.delete("/:id", auth, theJourneyController.deleteTheJourney);

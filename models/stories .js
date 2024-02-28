@@ -1,3 +1,4 @@
+const { boolean } = require("joi");
 const mongoose = require("mongoose");
 
 const storiesSchema = new mongoose.Schema({
@@ -23,6 +24,9 @@ const storiesSchema = new mongoose.Schema({
       },
       personNepali: {
         type: String,
+      },
+      display: {
+        type: Boolean,
       },
     },
   ],
