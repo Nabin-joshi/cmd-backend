@@ -18,6 +18,7 @@ const createYourSupport = async (req, res, next) => {
     return next(err);
   }
 };
+
 const getYourSupport = async (req, res, next) => {
   const locale = req.params.locale;
 
@@ -30,6 +31,7 @@ const getYourSupport = async (req, res, next) => {
     return next(err);
   }
 };
+
 const updateYourSupport = async (req, res, next) => {
   const yourSupport = req.body;
   const locale = req.params.locale;
