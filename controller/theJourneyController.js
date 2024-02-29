@@ -2,6 +2,7 @@ const multer = require("multer");
 const CatchAsyncError = require("../utils/catchAsyncError");
 const theJourney = require("../models/theJourney");
 const ErrorHandler = require("../utils/errorHandler");
+const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -89,19 +90,31 @@ exports.getTheJourneyById = CatchAsyncError(async (req, res, next) => {
 });
 
 // Update a TheJourney
-exports.updateTheJourney = CatchAsyncError(async (req, res, next) => {
-  const theJourney = await theJourney.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true, runValidators: true }
-  );
-  if (!theJourney) {
-    return res
-      .status(404)
-      .json({ success: false, error: "TheJourney not found" });
+
+exports.updateTheJourney = async (req, res, next) => {
+  try {
+    const objects = req.body;
+    const journeyTop = await theJourney.findOne();
+
+    objects.forEach((object) => {
+      const matchedJourney = journeyTop.contents.find((journey) =>
+        journey._id.equals(object._id)
+      );
+      if (matchedJourney) {
+        matchedJourney.date = object.date;
+        matchedJourney.dateNepali = object.dateNepali;
+        matchedJourney.desc = object.desc;
+        matchedJourney.descNepali = object.descNepali;
+      }
+    });
+
+    const savedStatus = await journeyTop.save();
+    res.status(200).json({ success: true, data: savedStatus });
+  } catch (error) {
+    console.error("Error updating journey:", error);
+    res.status(500).json({ success: false, error: "Internal server error" });
   }
-  res.status(200).json({ success: true, data: theJourney });
-});
+};
 
 // Delete a TheJourney
 exports.deleteTheJourney = CatchAsyncError(async (req, res, next) => {

@@ -12,7 +12,7 @@ ourImpactRouter.get("/all", ourImpactController.getAllOurImpacts);
 ourImpactRouter.get("/:id", ourImpactController.getOurImpactById);
 
 // update
-ourImpactRouter.put("/update/:id", ourImpactController.updateOurImpact);
+ourImpactRouter.put("", ourImpactController.updateOurImpacts);
 
 // delete
 ourImpactRouter.delete("/:id", auth, ourImpactController.deleteOurImpact);

@@ -90,20 +90,44 @@ exports.getOurPartnerById = CatchAsyncError(async (req, res, next) => {
   }
   res.status(200).json({ success: true, data: ourPartner });
 });
-
+const fs = require("fs");
 // Update a OurPartner
 exports.updateOurPartner = CatchAsyncError(async (req, res, next) => {
-  const ourPartner = await OurPartner.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true, runValidators: true }
-  );
-  if (!ourPartner) {
-    return res
-      .status(404)
-      .json({ success: false, error: "OurPartner not found" });
+  try {
+    const objects = req.body;
+    const partnerTop = await OurPartner.findOne();
+    objects.forEach((object) => {
+      const matchedPartner = partnerTop.contents.find((value) => {
+        return value._id.equals(object._id);
+      });
+      if (matchedPartner) {
+        if (object.newIcon) {
+          if (matchedPartner.icon) {
+            const previousIconPath = `${process.env.FILE_PATH}/images/${matchedPartner.icon}`;
+            try {
+              fs.unlinkSync(previousIconPath);
+            } catch (error) {
+              console.error("Error removing previous image: ", error);
+            }
+          }
+
+          const iconData = object.newIcon.replace(
+            /^data:image\/\w+;base64,/,
+            ""
+          );
+          const iconBuffer = Buffer.from(iconData, "base64");
+          const iconPath = `${process.env.FILE_PATH}/images/icon_${object._id}.jpeg`;
+          fs.writeFileSync(iconPath, iconBuffer);
+          matchedPartner.icon = iconPath.split("/").pop();
+        }
+      }
+    });
+    const savedPartner = await partnerTop.save();
+    res.status(200).json({ success: true, data: savedPartner });
+  } catch (error) {
+    console.error("Error updating partner values: ", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
-  res.status(200).json({ success: true, data: ourPartner });
 });
 
 // Delete a OurPartner

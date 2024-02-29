@@ -18,7 +18,7 @@ ourPartnersRouter.get("/all", ourPartnerController.getAllOurPartners);
 ourPartnersRouter.get("/:id", ourPartnerController.getOurPartnerById);
 
 // update
-ourPartnersRouter.put("/update/:id", ourPartnerController.updateOurPartner);
+ourPartnersRouter.put("", ourPartnerController.updateOurPartner);
 
 // delete
 ourPartnersRouter.delete("/:id", auth, ourPartnerController.deleteOurPartner);
