@@ -15,6 +15,7 @@ const sliderRoutes = require("./CMS-Routes/sliderRoutes");
 const ourworkRoutes = require("./CMS-Routes/ourworkRoutes");
 const geographicalCoverageRoutes = require("./CMS-Routes/geographicalCoverageRoutes");
 const yourSupportRoutes = require("./CMS-Routes/yourSupportRoutes");
+const aboutUsRouter = require("./aboutUsRoutes");
 
 // for login register and tokens
 router.use("/auth", authRoutes);
@@ -30,7 +31,7 @@ router.use("/ourPartners", ourPartnersRouter);
 router.use("/ourvalues", ourValuesRouter);
 router.use("/stories", storiesRouter);
 router.use("/thejourney", theJourneyRouter);
-
+router.use("/aboutUs", aboutUsRouter);
 router.use("/service", serviceRouter);
 router.use("/slider", sliderRoutes);
 router.use("/ourwork", ourworkRoutes);
