@@ -61,7 +61,13 @@ exports.updateAboutUsFields = CatchAsyncError(async (req, res, next) => {
 });
 
 exports.getAboutUs = CatchAsyncError(async (req, res, next) => {
-  let aboutUsObj = await AboutUs.findOne({});
+  const locale = req.query.locale;
+  const field = req.query.field;
+  const projection = {
+    [field]: 1, // Include field1
+  };
+  let aboutUsObj = await AboutUs.findOne({}, projection);
+
   if (!aboutUsObj) {
     aboutUsObj = await createAboutUsInital();
   }
