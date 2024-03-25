@@ -67,6 +67,12 @@ const aboutUsSchema = new mongoose.Schema({
   meetTheTeam: {
     type: String,
   },
+  ourApproach: {
+    type: String,
+  },
+  ourApproachNepali: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("AboutUs", aboutUsSchema);
