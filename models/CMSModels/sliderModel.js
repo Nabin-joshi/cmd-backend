@@ -1,3 +1,4 @@
+const { boolean } = require("joi");
 const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
@@ -11,6 +12,7 @@ const sliderSchema = new Schema(
     author: { type: mongoose.SchemaTypes.ObjectId, ref: "User" },
     locale: { type: String, required: false },
     learnMore: { type: String, required: false },
+    showImage: { type: String, required: false },
   },
   { timestamps: true }
 );

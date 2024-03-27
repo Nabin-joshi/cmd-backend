@@ -106,7 +106,7 @@ exports.updateOurImpacts = async (req, res, next) => {
         matchedOurImpact.count = obj.count;
         matchedOurImpact.countNepali = obj.countNepali;
         matchedOurImpact.desc = obj.desc;
-        matchedOurImpact.descNepali = obj.desc;
+        matchedOurImpact.descNepali = obj.descNepali;
         if (obj.newIcon) {
           if (matchedOurImpact.icon) {
             const prevImagePath = `${process.env.FILE_PATH}/images/${matchedOurImpact.icon}`;

@@ -14,6 +14,7 @@ const createSlider = async (req, res, next) => {
       video: video,
       locale,
       learnMore,
+      showImage,
     });
     await newSlider.save();
   } catch (error) {
@@ -56,6 +57,7 @@ const updateSliderData = async (req, res, next) => {
           author: getData.author,
           content: getData.content,
           learnMore: getData.learnMore,
+          showImage: getData.showImage,
         }
       );
     }
