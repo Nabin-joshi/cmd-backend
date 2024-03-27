@@ -16,6 +16,9 @@ const ourworkRoutes = require("./CMS-Routes/ourworkRoutes");
 const geographicalCoverageRoutes = require("./CMS-Routes/geographicalCoverageRoutes");
 const yourSupportRoutes = require("./CMS-Routes/yourSupportRoutes");
 const aboutUsRouter = require("./aboutUsRoutes");
+const resourceRouter = require("./resourceRoutes");
+const { getInvolvedData } = require("../controller/getInvolvedController");
+const getInvolvedRouter = require("./getInvolvedRoutes");
 
 // for login register and tokens
 router.use("/auth", authRoutes);
@@ -37,5 +40,6 @@ router.use("/slider", sliderRoutes);
 router.use("/ourwork", ourworkRoutes);
 router.use("/geographicalCoverage", geographicalCoverageRoutes);
 router.use("/yoursupport", yourSupportRoutes);
-
+router.use("/resources", resourceRouter);
+router.use("/getInvolved", getInvolvedRouter);
 module.exports = router;
