@@ -6,6 +6,7 @@ const YourSupportSchema = new mongoose.Schema({
   details: String,
   description: String,
   quotation: String,
+  quotationBy: String,
 });
 
 module.exports = mongoose.model("YourSupport", YourSupportSchema);

@@ -8,6 +8,8 @@ router.post("/developer/create/yourSupport", yourSupportController.create);
 
 router.get("/getYourSupport/:locale", yourSupportController.getService);
 
-router.put("/updateYourSupport/:locale", yourSupportController.update);
+router.get("/getall", yourSupportController.getAllYourSupport);
+
+router.put("/update/support/:locale", yourSupportController.update);
 
 module.exports = router;

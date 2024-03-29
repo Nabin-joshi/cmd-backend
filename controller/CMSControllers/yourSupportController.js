@@ -1,15 +1,17 @@
 const YourSupport = require("../../models/CMSModels/yourSupport");
 
 const createYourSupport = async (req, res, next) => {
-  const { locale, header, details, quotation } = req.body;
+  const { locale, header, details, description, quotation, quotationBy } =
+    req.body;
 
   try {
     let newYourSupport = new YourSupport({
       locale,
       header,
-      description,
       details,
+      description,
       quotation,
+      quotationBy,
     });
 
     await newYourSupport.save();
@@ -32,6 +34,17 @@ const getYourSupport = async (req, res, next) => {
   }
 };
 
+const getAllYourSupport = async (req, res, next) => {
+  try {
+    let selectedData = await YourSupport.find();
+    if (selectedData) {
+      return res.status(200).json({ yourSupport: selectedData });
+    }
+  } catch (err) {
+    return next(err);
+  }
+};
+
 const updateYourSupport = async (req, res, next) => {
   const yourSupport = req.body;
   const locale = req.params.locale;
@@ -46,8 +59,10 @@ const updateYourSupport = async (req, res, next) => {
           details: yourSupport.details,
           description: yourSupport.description,
           quotation: yourSupport.quotation,
+          quotationBy: yourSupport.quotationBy,
         }
       );
+      res.status(201).json({ msg: "Your Support Updated successfully" });
     }
   } catch (err) {
     return next(err);
@@ -58,6 +73,7 @@ const yourSupportController = {
   create: createYourSupport,
   getService: getYourSupport,
   update: updateYourSupport,
+  getAllYourSupport: getAllYourSupport,
 };
 
 module.exports = yourSupportController;
