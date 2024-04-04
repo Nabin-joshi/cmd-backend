@@ -4,6 +4,11 @@ const aboutUsController = require("../controller/AboutUsController");
 
 aboutUsRouter.post("/broadCommittee", aboutUsController.createBroadCommitte);
 aboutUsRouter.put("/broadCommittee", aboutUsController.updateAboutUsFields);
+aboutUsRouter.put(
+  "/updateAboutUsHeaderImage",
+  aboutUsController.updateAboutUsFields
+);
+
 aboutUsRouter.get("/broadCommittee", aboutUsController.getAboutUs);
 aboutUsRouter.delete(
   "/broadCommittee/:id",

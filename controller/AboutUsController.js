@@ -2,6 +2,13 @@ const AboutUs = require("../models/AboutUs");
 const catchAsyncError = require("../utils/catchAsyncError");
 const CatchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/errorHandler");
+const fs = require("fs");
+const {
+  deletepreviousPhotos,
+  storeImage,
+  randomNumberGenerator,
+  getImageUrl,
+} = require("../utils/fileHandling");
 
 async function createAboutUsInital() {
   const createdAboutUs = await AboutUs.create({
@@ -31,31 +38,36 @@ exports.createBroadCommitte = CatchAsyncError(async (req, res, next) => {
   ) {
     return next(new ErrorHandler("please provide name", 400));
   }
+  if (boardCommitte.photo.length > 0) {
+    boardCommitte.photo = storeImage(
+      boardCommitte.photo,
+      randomNumberGenerator()
+    );
+  }
+
   const aboutUsObj = await AboutUs.findOne();
   if (!aboutUsObj) {
     const createdAboutUs = await createAboutUsInital();
   }
-  aboutUsObj.boardCommittees.push(req.body);
+  aboutUsObj.boardCommittees.push(boardCommitte);
   const savedAboutUsObj = await aboutUsObj.save();
   res.status(201).json({ success: true, data: savedAboutUsObj });
 });
 
 exports.updateAboutUsFields = CatchAsyncError(async (req, res, next) => {
-  // const data = [{ key: "value" }, { key: "value" }];
-  // const genderOptions = AboutUs.schema
-  //   .path("boardCommittees")
-  //   .schema.path("gender").enumValues;
-
   const data = req.body;
   const aboutUsObj = await AboutUs.findOne({});
-  const objectKeys = Object.keys(data);
-  objectKeys.forEach((item) => {
+
+  Object.keys(data).forEach(async (item) => {
     if (item === "ourThematicAreas") {
       aboutUsObj.ourThematicAreas.push(data[item]);
-    } else {
-      aboutUsObj[item] = data[item];
+    } else if (item === "aboutUsHeaderImage") {
+      const newImage = data[item];
+      deletepreviousPhotos(aboutUsObj.aboutUsHeaderImage);
+      aboutUsObj.aboutUsHeaderImage = storeImage(newImage, aboutUsObj._id);
     }
   });
+
   const updatedAboutUsObj = await aboutUsObj.save();
   res.status(200).json({ success: true, data: updatedAboutUsObj });
 });
@@ -67,7 +79,14 @@ exports.getAboutUs = CatchAsyncError(async (req, res, next) => {
     [field]: 1, // Include field1
   };
   let aboutUsObj = await AboutUs.findOne({}, projection);
-
+  if (field === "aboutUsHeaderImage") {
+    aboutUsObj[field] = getImageUrl(aboutUsObj.field);
+  }
+  if (field === "boardCommittees") {
+    aboutUsObj.boardCommittees.forEach((bc, index) => {
+      bc.photo = getImageUrl(bc.photo);
+    });
+  }
   if (!aboutUsObj) {
     aboutUsObj = await createAboutUsInital();
   }
@@ -78,9 +97,12 @@ exports.deleteBoardCommitteeMembers = catchAsyncError(
   async (req, res, next) => {
     const boardCommitteeId = req.params.id;
     const aboutUs = await AboutUs.findOne();
-    let boardCommittees = aboutUs.boardCommittees.filter(
-      (bc) => !bc._id.equals(boardCommitteeId)
-    );
+    let boardCommittees = aboutUs.boardCommittees.filter((bc) => {
+      if (bc._id.equals(boardCommitteeId)) {
+        deletepreviousPhotos(bc.photo);
+      }
+      return !bc._id.equals(boardCommitteeId);
+    });
     aboutUs.boardCommittees = boardCommittees;
     await aboutUs.save();
     res.status(200).json({ success: true, data: req.params.id });

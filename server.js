@@ -7,6 +7,7 @@ const error = require("./utils/error");
 const cors = require("cors");
 const path = require("path");
 const bodyParser = require("body-parser");
+const { initializeDatabaseTables } = require("./utils/seeder");
 const app = express();
 
 app.use(cookieParser());
@@ -30,7 +31,7 @@ app.use(express.json());
 app.use("/api", router);
 
 dbConnection();
-
+initializeDatabaseTables();
 // to host static file like images
 app.use(
   "/public/images",
