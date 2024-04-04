@@ -65,7 +65,7 @@ exports.getAllOurPartners = CatchAsyncError(async (req, res, next) => {
 
   if (ourPartner) {
     ourPartner.contents.forEach((content) => {
-      content.icon = `${process.env.WEB_ADDRESS}:${process.env.port}/public/images/${content.icon}`;
+      content.icon = `${BACKEND_SERVER_PATH}/public/images/${content.icon}`;
     });
   }
 
@@ -91,6 +91,7 @@ exports.getOurPartnerById = CatchAsyncError(async (req, res, next) => {
   res.status(200).json({ success: true, data: ourPartner });
 });
 const fs = require("fs");
+const { BACKEND_SERVER_PATH } = require("../config/config");
 // Update a OurPartner
 exports.updateOurPartner = CatchAsyncError(async (req, res, next) => {
   try {

@@ -21,6 +21,7 @@ const { getInvolvedData } = require("../controller/getInvolvedController");
 const getInvolvedRouter = require("./getInvolvedRoutes");
 const ourProgramRoutes = require("./ourProgramRoutes");
 const contactUsRoutes = require("./contactUsRoutes");
+const latestNewsRoutes = require("./CMS-Routes/latestNewsRoutes");
 
 // for login register and tokens
 router.use("/auth", authRoutes);
@@ -46,4 +47,6 @@ router.use("/resources", resourceRouter);
 router.use("/getInvolved", getInvolvedRouter);
 router.use("/ourProgram", ourProgramRoutes);
 router.use("/contactUs", contactUsRoutes);
+router.use("/latestNews", latestNewsRoutes);
+
 module.exports = router;

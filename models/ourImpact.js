@@ -13,10 +13,10 @@ const ourImpactSchema = new mongoose.Schema({
         type: String,
       },
       count: {
-        type: Number,
+        type: String,
       },
       countNepali: {
-        type: Number,
+        type: String,
       },
       desc: {
         type: String,
