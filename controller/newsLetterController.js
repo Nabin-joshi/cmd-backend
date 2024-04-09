@@ -4,6 +4,7 @@ const newsLetterUserGroupMap = require("../models/newsLetterUserGroupMap");
 const newsletterUser = require("../models/newsletterUser");
 const CatchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/errorHandler");
+const nodemailer = require("nodemailer");
 
 exports.addNewsLetterUser = CatchAsyncError(async (req, res, next) => {
   const { name, email } = req.body;
@@ -174,6 +175,7 @@ exports.addNewsUserGroupMap = CatchAsyncError(async (req, res, next) => {
 
 var request = require("request");
 const { updateOne } = require("../models/users");
+const { getImageUrl } = require("../utils/fileHandling");
 
 exports.donateUs = CatchAsyncError(async (req, res, next) => {
   let amount = parseFloat(req.body.amount) * 100;
@@ -241,4 +243,69 @@ exports.handleKhaltiCallBack = CatchAsyncError(async (req, res, next) => {
   // return res
   //   .status(201)
   //   .json({ success: true, transactionInfo: response.data });
+});
+const mongoose = require("mongoose");
+
+exports.sendNewsLetterToGroups = CatchAsyncError(async (req, res, next) => {
+  const reqData = req.body;
+  const groupIds = reqData.groups.map((group) => group._id);
+  const result = await newsLetterUserGroupMap.aggregate([
+    {
+      $match: {
+        groupId: { $in: groupIds.map((id) => new mongoose.Types.ObjectId(id)) },
+      }, // Match documents with the specified group ID
+    },
+    {
+      $lookup: {
+        from: "newsletter_users", // Name of the NewsLetterUser collection
+        localField: "userId",
+        foreignField: "_id",
+        as: "user", // Output field containing the matched user document
+      },
+    },
+    {
+      $unwind: "$user", // Deconstruct the user array to get individual user documents
+    },
+    {
+      $project: {
+        _id: 0, // Exclude the _id field from the output
+        email: "$user.email", // Project the email field from the user document
+      },
+    },
+  ]);
+  const mappedEmails = result.map((e) => e.email);
+
+  const file = req.body.file;
+  const transporter = nodemailer.createTransport({
+    service: "Gmail", // Use the appropriate email service
+    auth: {
+      user: "suraj.trent255@gmail.com", // Your email address
+      pass: "uvyv pvxt fzmg iorv", // Your email password or application-specific password
+    },
+  });
+  // Setup email data with unicode symbols
+  const mailOptions = {
+    from: "test@ishanitech.com", // Sender address
+    to: mappedEmails, // List of recipients
+    subject: "Sending Files", // Subject line
+    text: "Please find the attached files.", // Plain text body
+    attachments: [
+      {
+        path: file, // File path
+      },
+    ],
+  };
+
+  // Send email with defined transport object
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.error("Error occurred while sending email:", error);
+    }
+    console.log("Message sent: %s", info.messageId);
+  });
+
+  res.status(201).json({
+    success: true,
+    data: "",
+  });
 });

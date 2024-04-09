@@ -9,6 +9,7 @@ const {
   getLimitedNewsLetterGroups,
   donateUs,
   handleKhaltiCallBack,
+  sendNewsLetterToGroups,
 } = require("../controller/newsLetterController");
 const newsLetterRouter = express.Router();
 
@@ -28,6 +29,6 @@ newsLetterRouter
   .post(addNewsLetterGroup)
   .get(getAllNewsLetterGroup);
 newsLetterRouter.route("/donateUs").post(donateUs).get(handleKhaltiCallBack);
-
+newsLetterRouter.post("/sendNewsLetterToGroups", sendNewsLetterToGroups);
 newsLetterRouter.route("/newsLetterUserGroupMap").post(addNewsUserGroupMap);
 module.exports = newsLetterRouter;
