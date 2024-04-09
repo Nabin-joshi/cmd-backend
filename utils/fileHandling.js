@@ -10,10 +10,11 @@ exports.deletepreviousPhotos = (originalImage) => {
 
 exports.storeImage = (newImage, id) => {
   const newTransformedImage = newImage.replace(/^data:image\/\w+;base64,/, "");
+  const randomNumber = this.randomNumberGenerator();
   const iconBuffer = Buffer.from(newTransformedImage, "base64");
   const iconPath = `${
     process.env.FILE_PATH
-  }/images/headerImage_${id}.${newImage.slice(11, 15)}`;
+  }/images/Image_${randomNumber}.${newImage.slice(11, 15)}`;
   fs.writeFileSync(iconPath, iconBuffer);
   const imageName = iconPath.split("/").pop();
   return imageName;

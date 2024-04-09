@@ -31,7 +31,7 @@ app.use(express.json());
 app.use("/api", router);
 
 dbConnection();
-initializeDatabaseTables();
+
 // to host static file like images
 app.use(
   "/public/images",
