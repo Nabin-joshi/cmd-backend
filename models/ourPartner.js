@@ -1,17 +1,12 @@
 const mongoose = require("mongoose");
 
 const ourPartnerSchema = new mongoose.Schema({
-  heading: {
-    type: String,
-  },
-  headingNepali: {
-    type: String,
-  },
-  contents: [
+  locale: String,
+  heading: String,
+  partner: [
     {
-      icon: {
-        type: String,
-      },
+      image: String,
+      content: String,
     },
   ],
 });

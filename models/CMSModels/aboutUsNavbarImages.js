@@ -5,6 +5,8 @@ const aboutusNavBarImages = new mongoose.Schema({
   aboutUsHistory: String,
   aboutUsIntroduction: String,
   aboutUsOurTeam: String,
+  aboutUsOurPartners: String,
+  strategicPlan: String,
 });
 
 const aboutusNavBar = mongoose.model(

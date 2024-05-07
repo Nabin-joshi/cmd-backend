@@ -6,7 +6,8 @@ const latestNews = new mongoose.Schema({
     {
       image: String,
       title: String,
-      date: String,
+      day: String,
+      month: String,
       contentDescription: String,
       details: String,
     },

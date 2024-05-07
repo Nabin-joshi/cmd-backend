@@ -49,7 +49,8 @@ const updateNews = async (req, res, next) => {
     );
     if (individualLatestNews) {
       individualLatestNews.title = data.title;
-      individualLatestNews.date = data.date;
+      individualLatestNews.day = data.day;
+      individualLatestNews.month = data.month;
       individualLatestNews.contentDescription = data.contentDescription;
       individualLatestNews.details = data.details;
       if (req.file) {
@@ -62,7 +63,8 @@ const updateNews = async (req, res, next) => {
       let newData = {
         image: req.file ? req.file.filename : "",
         title: data.title,
-        date: data.date,
+        day: data.day,
+        month: data.month,
         contentDescription: data.contentDescription,
         details: data.details,
       };

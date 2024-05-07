@@ -23,6 +23,11 @@ const ourProgramRoutes = require("./ourProgramRoutes");
 const contactUsRoutes = require("./contactUsRoutes");
 const latestNewsRoutes = require("./CMS-Routes/latestNewsRoutes");
 const donationRoutes = require("./donationRoutes");
+const socialLinkRoutes = require("./CMS-Routes/socialLinksRoutes");
+const popupPageRoutes = require("./CMS-Routes/popupPageRoutes");
+const mentalHelathRoutes = require("./CMS-Routes/mentalHealthRoutes");
+const strategicPlanRoutes = require("./CMS-Routes/ourStrategicPlanRoutes");
+const footerLinksPageRoutes = require("./CMS-Routes/footerLinksPagesRoutes");
 
 // for login register and tokens
 router.use("/auth", authRoutes);
@@ -50,5 +55,10 @@ router.use("/ourProgram", ourProgramRoutes);
 router.use("/contactUs", contactUsRoutes);
 router.use("/latestNews", latestNewsRoutes);
 router.use("/donation", donationRoutes);
+router.use("/socialLinks", socialLinkRoutes);
+router.use("/popup", popupPageRoutes);
+router.use("/mentalHealth", mentalHelathRoutes);
+router.use("/strategicPlan", strategicPlanRoutes);
+router.use("/footerLinks", footerLinksPageRoutes);
 
 module.exports = router;

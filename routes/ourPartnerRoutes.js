@@ -2,25 +2,39 @@ const express = require("express");
 const ourPartnersRouter = express.Router();
 const ourPartnerController = require("../controller/ourPartnerController");
 const auth = require("../middlewares/auth");
+const getFileUploadMiddleware = require("../middlewares/fileUpload");
+
 ourPartnersRouter.post(
-  "/heading",
-  ourPartnerController.createOurPartnerHeading
-);
-ourPartnersRouter.post(
-  "/contents",
-  ourPartnerController.createOurPartnerContent
+  "/create/ourPartner",
+  ourPartnerController.createOurPartner
 );
 
-// get all
-ourPartnersRouter.get("/all", ourPartnerController.getAllOurPartners);
+ourPartnersRouter.get(
+  "/getPartner/:locale",
+  ourPartnerController.getOurPartner
+);
 
-// get blog by id
-ourPartnersRouter.get("/:id", ourPartnerController.getOurPartnerById);
+ourPartnersRouter.get("/getAllPartner", ourPartnerController.getAllOurPartner);
 
-// update
-ourPartnersRouter.put("", ourPartnerController.updateOurPartner);
+ourPartnersRouter.delete(
+  "/delete/partner/:locale",
+  ourPartnerController.deleteOurPartner
+);
 
-// delete
-ourPartnersRouter.delete("/:id", auth, ourPartnerController.deleteOurPartner);
+ourPartnersRouter.put(
+  "/updatePartner/:locale",
+  getFileUploadMiddleware("public/images", [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+  ]).single("image"),
+  ourPartnerController.updateOurPartner
+);
+
+ourPartnersRouter.put(
+  "/update/partner/heading/:locale",
+  ourPartnerController.updateOurPartnerHeading
+);
 
 module.exports = ourPartnersRouter;

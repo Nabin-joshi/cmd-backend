@@ -309,3 +309,36 @@ exports.sendNewsLetterToGroups = CatchAsyncError(async (req, res, next) => {
     data: "",
   });
 });
+
+exports.deleteGroup = async (req, res, next) => {
+  try {
+    const selectedGroupId = req.params.groupId;
+    console.log("Selected Group ID:", selectedGroupId);
+
+    const group = await newsLetterGroup.findOne({
+      _id: selectedGroupId.toString(),
+    });
+
+    if (!group) {
+      console.log("Group not found");
+      return res
+        .status(404)
+        .json({ success: false, message: "Group not found" });
+    }
+
+    await newsLetterGroup.deleteOne({ _id: selectedGroupId });
+
+    await newsLetterUserGroupMap.deleteMany({ groupId: selectedGroupId });
+
+    return res.status(200).json({
+      success: true,
+      message: "Group and associated users deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      message: "An error occurred while processing your request.",
+    });
+  }
+};

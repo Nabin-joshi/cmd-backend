@@ -1,0 +1,5 @@
+{
+  "appService.zipIgnorePattern": ["node_modules{,/**}", ".vscode{,/**}"],
+  "appService.defaultWebAppToDeploy": "/subscriptions/20593ade-58e3-4f70-a5b3-4003abb82c6f/resourceGroups/Kosish-Nepal/providers/Microsoft.Web/sites/koshishNepal",
+  "appService.deploySubpath": "."
+}

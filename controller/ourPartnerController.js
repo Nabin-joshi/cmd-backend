@@ -1,143 +1,149 @@
-const multer = require("multer");
 const OurPartner = require("../models/ourPartner");
-const CatchAsyncError = require("../utils/catchAsyncError");
-const ErrorHandler = require("../utils/errorHandler");
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, `${process.env.FILE_PATH}\\images`);
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const upload = multer({
-  storage: storage,
-  fileFilter: function (req, file, cb) {
-    // Implement file filter logic if needed
-    cb(null, true);
-  },
-});
-
-exports.createOurPartnerHeading = CatchAsyncError(async (req, res, next) => {
-  if (!req.body.heading && !req.body.headingNepali) {
-    return next(
-      new ErrorHandler("Heading and Heading Nepali are required", 400)
-    );
-  }
-
-  const ourPartnerHeading = await OurPartner.findOneAndUpdate({}, req.body, {
-    upsert: true,
-    runValidators: true,
-    new: true, // Return the modified document instead of the original
-  });
-
-  res.status(201).json({
-    success: true,
-    data: ourPartnerHeading,
-  });
-});
-
-exports.createOurPartnerContent = [
-  upload.single("icon"),
-  CatchAsyncError(async (req, res, next) => {
-    if (!req.file) {
-      return next(new ErrorHandler("Icon is required", 400));
-    }
-
-    const iconPath = req.file.filename;
-    const ourPartner = await OurPartner.findOne();
-
-    if (!ourPartner) {
-      return next(new ErrorHandler("Heading must be added first", 400));
-    }
-
-    ourPartner.contents.push({ icon: iconPath });
-    const savedOurPartner = await ourPartner.save();
-
-    res.status(201).json({ success: true, data: savedOurPartner });
-  }),
-];
-
-exports.getAllOurPartners = CatchAsyncError(async (req, res, next) => {
-  const ourPartner = await OurPartner.findOne();
-
-  if (ourPartner) {
-    ourPartner.contents.forEach((content) => {
-      content.icon = `${BACKEND_SERVER_PATH}/public/images/${content.icon}`;
-    });
-  }
-
-  res.status(200).json({ success: true, data: ourPartner });
-});
-
-// Create a new OurPartner
-exports.createOurPartner = CatchAsyncError(async (req, res, next) => {
-  const ourPartner = await OurPartner.create(req.body);
-  res.status(201).json({ success: true, data: ourPartner });
-});
-
-// Get all OurPartners
-
-// Get single OurPartner by ID
-exports.getOurPartnerById = CatchAsyncError(async (req, res, next) => {
-  const ourPartner = await OurPartner.findById(req.params.id);
-  if (!ourPartner) {
-    return res
-      .status(404)
-      .json({ success: false, error: "OurPartner not found" });
-  }
-  res.status(200).json({ success: true, data: ourPartner });
-});
-const fs = require("fs");
 const { BACKEND_SERVER_PATH } = require("../config/config");
-// Update a OurPartner
-exports.updateOurPartner = CatchAsyncError(async (req, res, next) => {
-  try {
-    const objects = req.body;
-    const partnerTop = await OurPartner.findOne();
-    objects.forEach((object) => {
-      const matchedPartner = partnerTop.contents.find((value) => {
-        return value._id.equals(object._id);
-      });
-      if (matchedPartner) {
-        if (object.newIcon) {
-          if (matchedPartner.icon) {
-            const previousIconPath = `${process.env.FILE_PATH}/images/${matchedPartner.icon}`;
-            try {
-              fs.unlinkSync(previousIconPath);
-            } catch (error) {
-              console.error("Error removing previous image: ", error);
-            }
-          }
 
-          const iconData = object.newIcon.replace(
-            /^data:image\/\w+;base64,/,
-            ""
-          );
-          const iconBuffer = Buffer.from(iconData, "base64");
-          const iconPath = `${process.env.FILE_PATH}/images/icon_${object._id}.jpeg`;
-          fs.writeFileSync(iconPath, iconBuffer);
-          matchedPartner.icon = iconPath.split("/").pop();
+// Our Partner
+const createOurPartner = async (req, res, next) => {
+  const { heading, locale, partner } = req.body;
+
+  let newOurPatners;
+
+  try {
+    newOurPatners = new OurPartner({ heading, locale, partner });
+    await newOurPatners.save();
+    return res.status(201).json({ msg: "Our Partner Created successfully" });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const updateOurPartner = async (req, res, next) => {
+  const locale = req.params.locale;
+  const data = req.body;
+
+  let selectedData;
+  try {
+    selectedData = await OurPartner.findOne({ locale: locale });
+
+    let individualPartner = selectedData.partner.find(
+      (item) => item.id === data.id
+    );
+    if (individualPartner) {
+      individualPartner.content = data.content;
+      if (req.file) {
+        individualPartner.image = req.file.filename;
+      }
+
+      await selectedData.save();
+      res.status(201).json({ msg: "Partner Updated Successfully" });
+    } else {
+      let newData = {
+        image: req.file ? req.file.filename : "",
+        content: data.content,
+      };
+      selectedData.partner.push(newData);
+      selectedData.save();
+      res.status(201).json({ msg: "Partner saved Successfully" });
+    }
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const updateOurPartnerHeading = async (req, res, next) => {
+  const getData = req.body;
+  const locale = req.params.locale;
+
+  let selectedData;
+
+  try {
+    selectedData = await OurPartner.findOne({ locale: locale });
+    if (selectedData) {
+      await OurPartner.updateOne(
+        { locale: locale },
+        {
+          heading: getData.heading,
         }
+      );
+    }
+    return res
+      .status(201)
+      .json({ msg: "Our Partner Heading Updated Successfully" });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+const getOurPartner = async (req, res, next) => {
+  let locale = req.params.locale;
+
+  try {
+    let ourPartner = await OurPartner.findOne({ locale: locale });
+    ourPartner.partner = ourPartner.partner.map((item) => {
+      if (item.image && item.image !== "") {
+        item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+        return item;
+      } else {
+        return item;
       }
     });
-    const savedPartner = await partnerTop.save();
-    res.status(200).json({ success: true, data: savedPartner });
-  } catch (error) {
-    console.error("Error updating partner values: ", error);
-    res.status(500).json({ success: false, error: "Internal Server Error" });
+    if (ourPartner) {
+      return res.status(200).json(ourPartner);
+    }
+  } catch (err) {
+    return next(err);
   }
-});
+};
 
-// Delete a OurPartner
-exports.deleteOurPartner = CatchAsyncError(async (req, res, next) => {
-  const ourPartner = await OurPartner.findByIdAndDelete(req.params.id);
-  if (!ourPartner) {
-    return res
-      .status(404)
-      .json({ success: false, error: "OurPartner not found" });
+const getAllOurPartner = async (req, res, next) => {
+  try {
+    let ourPartner = await OurPartner.find();
+    ourPartner.forEach((ourpartner) => {
+      ourpartner.partner = ourpartner.partner.map((item) => {
+        if (item.image && item.image !== "") {
+          item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+          return item;
+        } else {
+          return item;
+        }
+      });
+    });
+    if (ourPartner) {
+      return res.status(200).json(ourPartner);
+    }
+  } catch (err) {
+    return next(err);
   }
-  res.status(200).json({ success: true, data: {} });
-});
+};
+
+const deleteOurPartner = async (req, res, next) => {
+  let locale = req.params.locale;
+  const id = req.query.id;
+
+  try {
+    let ourPartner = await OurPartner.findOne({ locale: locale });
+    const indexToDelete = ourPartner.partner.findIndex(
+      (item) => item._id.toString() === id.toString()
+    );
+
+    if (indexToDelete !== -1) {
+      ourPartner.partner.splice(indexToDelete, 1);
+    }
+
+    await ourPartner.save();
+    return res.status(201).json({ msg: "Our Partner Deleted Successfully" });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const ourPartnerController = {
+  createOurPartner,
+  updateOurPartnerHeading,
+  updateOurPartner,
+  getAllOurPartner,
+  getOurPartner,
+  deleteOurPartner,
+};
+
+module.exports = ourPartnerController;

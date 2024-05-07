@@ -10,6 +10,8 @@ const {
   getImageUrl,
 } = require("../utils/fileHandling");
 const { donateUs } = require("./newsLetterController");
+const { request } = require("http");
+const { BACKEND_SERVER_PATH } = require("../config/config");
 
 exports.updateDonationFields = CatchAsyncError(async (req, res, next) => {
   const data = req.body;
@@ -45,6 +47,9 @@ exports.getDonation = CatchAsyncError(async (req, res, next) => {
       bc.icon = getImageUrl(bc.icon);
     });
   }
+  if (donationObj.image && donationObj.image !== "") {
+    donationObj.image = getImageUrl(donationObj.image);
+  }
   res.status(200).json({ success: true, data: donationObj });
 });
 
@@ -63,4 +68,33 @@ exports.deleteIconDescDonation = catchAsyncError(async (req, res, next) => {
   donationObj.iconDescs = iconDescs;
   await donationObj.save();
   res.status(200).json({ success: true, data: iconDescId });
+});
+
+exports.updateDonationImage = catchAsyncError(async (req, res, next) => {
+  try {
+    const donationObj = await donation.findOne({});
+    if (req.file) {
+      donationObj.image = req.file.filename;
+      await donationObj.save();
+      return res.status(200).json({ msg: "Image added successfully" });
+    } else {
+      return res.status(200).json({ msg: "Image added successfully" });
+    }
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
+});
+
+exports.getDonationImage = catchAsyncError(async (req, res, next) => {
+  try {
+    const donationObj = await donation.findOne({});
+    if (donationObj.image && donationObj.image !== "") {
+      donationObj.image = `${BACKEND_SERVER_PATH}/public/images/${donationObj.image}`;
+    }
+    return res.status(200).json({ image: donationObj.image });
+  } catch (error) {
+    console.error(error);
+    return next(error);
+  }
 });

@@ -13,6 +13,8 @@ const createAboutUsImage = async (req, res, next) => {
       aboutUsHistory,
       aboutUsIntroduction,
       aboutUsOurTeam,
+      aboutUsOurPartners,
+      strategicPlan,
     });
     await newData.save();
     return res.status(201).json({ msg: "Work Created successfully" });
@@ -36,6 +38,12 @@ const updateAboutUsImage = async (req, res, next) => {
         await selectedData.save();
       } else if (data.name === "aboutUsOurTeam") {
         selectedData.aboutUsOurTeam = req.file.filename;
+        await selectedData.save();
+      } else if (data.name === "aboutUsOurPartners") {
+        selectedData.aboutUsOurPartners = req.file.filename;
+        await selectedData.save();
+      } else if (data.name === "strategicPlan") {
+        selectedData.strategicPlan = req.file.filename;
         await selectedData.save();
       }
       res.status(201).json({ msg: "Work Updated Successfully" });
@@ -63,6 +71,17 @@ const getAboutUsImage = async (req, res, next) => {
 
     if (aboutUsImages.aboutUsOurTeam && aboutUsImages.aboutUsOurTeam != "") {
       aboutUsImages.aboutUsOurTeam = `${BACKEND_SERVER_PATH}/public/images/${aboutUsImages.aboutUsOurTeam}`;
+    }
+
+    if (
+      aboutUsImages.aboutUsOurPartners &&
+      aboutUsImages.aboutUsOurPartners != ""
+    ) {
+      aboutUsImages.aboutUsOurPartners = `${BACKEND_SERVER_PATH}/public/images/${aboutUsImages.aboutUsOurPartners}`;
+    }
+
+    if (aboutUsImages.strategicPlan && aboutUsImages.strategicPlan != "") {
+      aboutUsImages.strategicPlan = `${BACKEND_SERVER_PATH}/public/images/${aboutUsImages.strategicPlan}`;
     }
 
     return res.status(200).json(aboutUsImages);

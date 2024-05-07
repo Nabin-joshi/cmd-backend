@@ -9,6 +9,10 @@ const donationSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  image: {
+    type: String,
+    default: "",
+  },
   iconDescs: [
     {
       icon: {
