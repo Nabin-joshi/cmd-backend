@@ -3,6 +3,7 @@ const CatchAsyncError = require("../utils/catchAsyncError");
 const theJourney = require("../models/theJourney");
 const ErrorHandler = require("../utils/errorHandler");
 const fs = require("fs");
+const { BACKEND_SERVER_PATH } = require("../config/config");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -65,7 +66,7 @@ exports.getAllTheJourney = CatchAsyncError(async (req, res, next) => {
 
   if (journey) {
     theJourney.contents.forEach((content) => {
-      content.image = `${process.env.WEB_ADDRESS}:${process.env.port}/public/images/${content.image}`;
+      content.image = `${BACKEND_SERVER_PATH}/public/images/${content.image}`;
     });
   }
 

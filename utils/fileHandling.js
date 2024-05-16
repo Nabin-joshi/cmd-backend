@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { BACKEND_SERVER_PATH } = require("../config/config");
 exports.deletepreviousPhotos = (originalImage) => {
   const prevImagePath = `${process.env.FILE_PATH}/images/${originalImage}`;
   try {
@@ -39,4 +40,4 @@ exports.randomNumberGenerator = () => {
 };
 
 exports.getImageUrl = (iconName) =>
-  `${process.env.WEB_ADDRESS}:${process.env.PORT}/public/images/${iconName}`;
+  `${BACKEND_SERVER_PATH}/public/images/${iconName}`;

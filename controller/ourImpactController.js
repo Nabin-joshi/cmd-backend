@@ -4,6 +4,7 @@ const CatchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/errorHandler");
 const ourImpact = require("../models/ourImpact");
 const fs = require("fs");
+const { BACKEND_SERVER_PATH } = require("../config/config");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, `${process.env.FILE_PATH}\\images`);
@@ -59,7 +60,7 @@ exports.getAllOurImpacts = CatchAsyncError(async (req, res, next) => {
   if (ourImpact) {
     ourImpact.contents.map((eachImpact, index) => {
       let iconName = eachImpact.icon;
-      eachImpact.icon = `${process.env.WEB_ADDRESS}:${process.env.port}/public/images/${iconName}`;
+      eachImpact.icon = `${BACKEND_SERVER_PATH}/public/images/${iconName}`;
     });
   }
   res.status(200).json({ success: true, data: ourImpact });

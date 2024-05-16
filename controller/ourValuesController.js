@@ -4,6 +4,7 @@ const fs = require("fs");
 
 const multer = require("multer");
 const ErrorHandler = require("../utils/errorHandler");
+const { BACKEND_SERVER_PATH } = require("../config/config");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -56,7 +57,7 @@ exports.getAllOurValues = CatchAsyncError(async (req, res, next) => {
   const ourValues = await OurValues.findOne();
   ourValues.contents.map((eachValue) => {
     let iconName = eachValue.icon;
-    eachValue.icon = `${process.env.WEB_ADDRESS}:${process.env.PORT}/public/images/${iconName}`;
+    eachValue.icon = `${BACKEND_SERVER_PATH}/public/images/${iconName}`;
   });
   res.status(200).json({ success: true, data: ourValues });
 });

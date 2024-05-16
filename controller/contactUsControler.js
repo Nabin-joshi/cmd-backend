@@ -4,6 +4,7 @@ const catchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/errorHandler");
 const fs = require("fs");
 const { deletepreviousPhotos, storeImage } = require("../utils/fileHandling");
+const { BACKEND_SERVER_PATH } = require("../config/config");
 
 exports.getContactUs = catchAsyncError(async (req, res, next) => {
   const locale = req.query.locale;
@@ -21,7 +22,7 @@ exports.getContactUs = catchAsyncError(async (req, res, next) => {
   if (!ourProgamObject) {
     next(new ErrorHandler("no single obj found !!"));
   }
-  ourProgamObject.headerImage = `${process.env.WEB_ADDRESS}:${process.env.PORT}/public/images/${ourProgamObject.headerImage}`;
+  ourProgamObject.headerImage = `${BACKEND_SERVER_PATH}/public/images/${ourProgamObject.headerImage}`;
   res.status(200).json({ success: true, data: ourProgamObject });
 });
 
