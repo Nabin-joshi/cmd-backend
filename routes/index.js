@@ -28,6 +28,8 @@ const popupPageRoutes = require("./CMS-Routes/popupPageRoutes");
 const mentalHelathRoutes = require("./CMS-Routes/mentalHealthRoutes");
 const strategicPlanRoutes = require("./CMS-Routes/ourStrategicPlanRoutes");
 const footerLinksPageRoutes = require("./CMS-Routes/footerLinksPagesRoutes");
+const needHelpRoutes = require("./CMS-Routes/needHelpRoutes");
+const brandingRoutes = require("./CMS-Routes/brandingRoutes");
 
 // for login register and tokens
 router.use("/auth", authRoutes);
@@ -60,5 +62,7 @@ router.use("/popup", popupPageRoutes);
 router.use("/mentalHealth", mentalHelathRoutes);
 router.use("/strategicPlan", strategicPlanRoutes);
 router.use("/footerLinks", footerLinksPageRoutes);
+router.use("/needhelp", needHelpRoutes);
+router.use("/branding", brandingRoutes);
 
 module.exports = router;
