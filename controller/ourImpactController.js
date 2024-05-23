@@ -7,7 +7,7 @@ const fs = require("fs");
 const { BACKEND_SERVER_PATH } = require("../config/config");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, `${process.env.FILE_PATH}\\images`);
+    cb(null, `${process.env.FILE_PATH}/images`);
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
