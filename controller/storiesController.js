@@ -8,7 +8,7 @@ const { BACKEND_SERVER_PATH } = require("../config/config");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, `${process.env.FILE_PATH}\\images`);
+    cb(null, `${process.env.FILE_PATH}/images`);
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
@@ -79,7 +79,9 @@ exports.getAllStories = CatchAsyncError(async (req, res, next) => {
   const stories = await Stories.findOne();
   stories.contents.map((eachStory, index) => {
     let imageName = eachStory.image.split("\\").pop();
-    eachStory.image = `${BACKEND_SERVER_PATH}/public/images/${imageName}`;
+    eachStory.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+      imageName
+    )}`;
   });
   res.status(200).json({ success: true, data: stories });
 });

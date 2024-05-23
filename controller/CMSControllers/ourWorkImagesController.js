@@ -68,23 +68,33 @@ const getOurWorkImage = async (req, res, next) => {
       ourWorkImages.advocacyAwarness &&
       ourWorkImages.advocacyAwarness != ""
     ) {
-      ourWorkImages.advocacyAwarness = `${BACKEND_SERVER_PATH}/public/images/${ourWorkImages.advocacyAwarness}`;
+      ourWorkImages.advocacyAwarness = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        ourWorkImages.advocacyAwarness
+      )}`;
     }
 
     if (ourWorkImages.empowerment && ourWorkImages.empowerment != "") {
-      ourWorkImages.empowerment = `${BACKEND_SERVER_PATH}/public/images/${ourWorkImages.empowerment}`;
+      ourWorkImages.empowerment = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        ourWorkImages.empowerment
+      )}`;
     }
 
     if (ourWorkImages.support && ourWorkImages.support != "") {
-      ourWorkImages.support = `${BACKEND_SERVER_PATH}/public/images/${ourWorkImages.support}`;
+      ourWorkImages.support = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        ourWorkImages.support
+      )}`;
     }
 
     if (ourWorkImages.orgDevelopment && ourWorkImages.orgDevelopment != "") {
-      ourWorkImages.orgDevelopment = `${BACKEND_SERVER_PATH}/public/images/${ourWorkImages.orgDevelopment}`;
+      ourWorkImages.orgDevelopment = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        ourWorkImages.orgDevelopment
+      )}`;
     }
 
     if (ourWorkImages.ecsc && ourWorkImages.ecsc != "") {
-      ourWorkImages.ecsc = `${BACKEND_SERVER_PATH}/public/images/${ourWorkImages.ecsc}`;
+      ourWorkImages.ecsc = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        ourWorkImages.ecsc
+      )}`;
     }
 
     return res.status(200).json(ourWorkImages);

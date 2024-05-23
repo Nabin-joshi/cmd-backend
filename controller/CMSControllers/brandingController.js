@@ -22,7 +22,9 @@ const getBranding = async (req, res, next) => {
   try {
     const branding = await Branding.find();
     if (branding[0].logo && branding[0].logo !== "") {
-      branding[0].logo = `${BACKEND_SERVER_PATH}/public/images/${branding[0].logo}`;
+      branding[0].logo = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        branding[0].logo
+      )}`;
     }
     return res.status(201).json(branding);
   } catch (error) {
@@ -63,7 +65,9 @@ const updateLogo = async (req, res, next) => {
       selectedData.logo = req.file.filename;
       selectedData.save();
       res.status(200).json({
-        image: `${BACKEND_SERVER_PATH}/public/images/${req.file.filename}`,
+        image: `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          req.file.filename
+        )}`,
       });
     } else {
       selectedData.save();

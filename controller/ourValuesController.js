@@ -57,7 +57,9 @@ exports.getAllOurValues = CatchAsyncError(async (req, res, next) => {
   const ourValues = await OurValues.findOne();
   ourValues.contents.map((eachValue) => {
     let iconName = eachValue.icon;
-    eachValue.icon = `${BACKEND_SERVER_PATH}/public/images/${iconName}`;
+    eachValue.icon = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+      iconName
+    )}`;
   });
   res.status(200).json({ success: true, data: ourValues });
 });

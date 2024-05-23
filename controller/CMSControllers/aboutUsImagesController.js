@@ -59,29 +59,39 @@ const getAboutUsImage = async (req, res, next) => {
   try {
     let aboutUsImages = await AboutUs.findOne({ locale: "" });
     if (aboutUsImages.aboutUsHistory && aboutUsImages.aboutUsHistory != "") {
-      aboutUsImages.aboutUsHistory = `${BACKEND_SERVER_PATH}/public/images/${aboutUsImages.aboutUsHistory}`;
+      aboutUsImages.aboutUsHistory = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        aboutUsImages.aboutUsHistory
+      )}`;
     }
 
     if (
       aboutUsImages.aboutUsIntroduction &&
       aboutUsImages.aboutUsIntroduction != ""
     ) {
-      aboutUsImages.aboutUsIntroduction = `${BACKEND_SERVER_PATH}/public/images/${aboutUsImages.aboutUsIntroduction}`;
+      aboutUsImages.aboutUsIntroduction = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        aboutUsImages.aboutUsIntroduction
+      )}`;
     }
 
     if (aboutUsImages.aboutUsOurTeam && aboutUsImages.aboutUsOurTeam != "") {
-      aboutUsImages.aboutUsOurTeam = `${BACKEND_SERVER_PATH}/public/images/${aboutUsImages.aboutUsOurTeam}`;
+      aboutUsImages.aboutUsOurTeam = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        aboutUsImages.aboutUsOurTeam
+      )}`;
     }
 
     if (
       aboutUsImages.aboutUsOurPartners &&
       aboutUsImages.aboutUsOurPartners != ""
     ) {
-      aboutUsImages.aboutUsOurPartners = `${BACKEND_SERVER_PATH}/public/images/${aboutUsImages.aboutUsOurPartners}`;
+      aboutUsImages.aboutUsOurPartners = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        aboutUsImages.aboutUsOurPartners
+      )}`;
     }
 
     if (aboutUsImages.strategicPlan && aboutUsImages.strategicPlan != "") {
-      aboutUsImages.strategicPlan = `${BACKEND_SERVER_PATH}/public/images/${aboutUsImages.strategicPlan}`;
+      aboutUsImages.strategicPlan = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        aboutUsImages.strategicPlan
+      )}`;
     }
 
     return res.status(200).json(aboutUsImages);

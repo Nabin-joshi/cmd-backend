@@ -90,7 +90,9 @@ exports.getDonationImage = catchAsyncError(async (req, res, next) => {
   try {
     const donationObj = await donation.findOne({});
     if (donationObj.image && donationObj.image !== "") {
-      donationObj.image = `${BACKEND_SERVER_PATH}/public/images/${donationObj.image}`;
+      donationObj.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        donationObj.image
+      )}`;
     }
     return res.status(200).json({ image: donationObj.image });
   } catch (error) {

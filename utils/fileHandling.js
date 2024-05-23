@@ -40,4 +40,4 @@ exports.randomNumberGenerator = () => {
 };
 
 exports.getImageUrl = (iconName) =>
-  `${BACKEND_SERVER_PATH}/public/images/${iconName}`;
+  `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(iconName)}`;

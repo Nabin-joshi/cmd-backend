@@ -51,16 +51,24 @@ const getGetInvolvedImage = async (req, res, next) => {
   try {
     let getInvolved = await GetInvolved.findOne({ locale: "" });
     if (getInvolved.procurement && getInvolved.procurement != "") {
-      getInvolved.procurement = `${BACKEND_SERVER_PATH}/public/images/${getInvolved.procurement}`;
+      getInvolved.procurement = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        getInvolved.procurement
+      )}`;
     }
     if (getInvolved.vacancy && getInvolved.vacancy != "") {
-      getInvolved.vacancy = `${BACKEND_SERVER_PATH}/public/images/${getInvolved.vacancy}`;
+      getInvolved.vacancy = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        getInvolved.vacancy
+      )}`;
     }
     if (getInvolved.volunteer && getInvolved.volunteer != "") {
-      getInvolved.volunteer = `${BACKEND_SERVER_PATH}/public/images/${getInvolved.volunteer}`;
+      getInvolved.volunteer = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        getInvolved.volunteer
+      )}`;
     }
     if (getInvolved.donate && getInvolved.donate != "") {
-      getInvolved.donate = `${BACKEND_SERVER_PATH}/public/images/${getInvolved.donate}`;
+      getInvolved.donate = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        getInvolved.donate
+      )}`;
     }
 
     return res.status(200).json(getInvolved);

@@ -21,7 +21,9 @@ const getAllNews = async (req, res, next) => {
     latestNews.forEach((News) => {
       News.news = News.news.map((item) => {
         if (item.image && item.image !== "") {
-          item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+          item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+            item.image
+          )}`;
           return item;
         } else {
           return item;
@@ -105,7 +107,9 @@ const getNews = async (req, res, next) => {
     let latestNews = await LatestNews.findOne({ locale: locale });
     latestNews.news = latestNews.news.map((item) => {
       if (item.image && item.image !== "") {
-        item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+        item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          item.image
+        )}`;
         return item;
       } else {
         return item;

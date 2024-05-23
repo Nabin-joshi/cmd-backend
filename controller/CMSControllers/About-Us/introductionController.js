@@ -49,7 +49,9 @@ const getIntroductionContent = async (req, res, next) => {
   try {
     const introductionData = await Introduction.findOne({ locale: locale });
     if (introductionData.image && introductionData.image !== "") {
-      introductionData.image = `${BACKEND_SERVER_PATH}/public/images/${introductionData.image}`;
+      introductionData.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        introductionData.image
+      )}`;
     }
     return res.status(201).json(introductionData);
   } catch (error) {
@@ -62,7 +64,9 @@ const getAllIntroductionContent = async (req, res, next) => {
     let selectedIntroduction = await Introduction.find();
     selectedIntroduction.forEach((introduction) => {
       if (introduction.image && introduction.image !== "") {
-        introduction.image = `${BACKEND_SERVER_PATH}/public/images/${introduction.image}`;
+        introduction.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          introduction.image
+        )}`;
         return introduction;
       } else {
         return introduction;
@@ -187,7 +191,9 @@ const getOurThematicArea = async (req, res, next) => {
     ourThematicAreas.thematicAreas = ourThematicAreas.thematicAreas.map(
       (item) => {
         if (item.image && item.image !== "") {
-          item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+          item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+            item.image
+          )}`;
           return item;
         } else {
           return item;
@@ -209,7 +215,9 @@ const getAllOurThematicArea = async (req, res, next) => {
       ourthematicAreas.thematicAreas = ourthematicAreas.thematicAreas.map(
         (item) => {
           if (item.image && item.image !== "") {
-            item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+            item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+              item.image
+            )}`;
             return item;
           } else {
             return item;
@@ -328,7 +336,9 @@ const getOurValues = async (req, res, next) => {
     let ourValues = await OurValues.findOne({ locale: locale });
     ourValues.values = ourValues.values.map((item) => {
       if (item.image && item.image !== "") {
-        item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+        item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          item.image
+        )}`;
         return item;
       } else {
         return item;
@@ -348,7 +358,9 @@ const getAllOurValues = async (req, res, next) => {
     ourValues.forEach((ourvalues) => {
       ourvalues.values = ourvalues.values.map((item) => {
         if (item.image && item.image !== "") {
-          item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+          item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+            item.image
+          )}`;
           return item;
         } else {
           return item;
@@ -464,7 +476,9 @@ const getOurApproach = async (req, res, next) => {
     let ourApproach = await OurApproach.findOne({ locale: locale });
     ourApproach.approach = ourApproach.approach.map((item) => {
       if (item.image && item.image !== "") {
-        item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+        item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          item.image
+        )}`;
         return item;
       } else {
         return item;
@@ -484,7 +498,9 @@ const getAllOurApproach = async (req, res, next) => {
     ourApproach.forEach((ourapproach) => {
       ourapproach.approach = ourapproach.approach.map((item) => {
         if (item.image && item.image !== "") {
-          item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+          item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+            item.image
+          )}`;
           return item;
         } else {
           return item;

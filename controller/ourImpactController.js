@@ -60,7 +60,9 @@ exports.getAllOurImpacts = CatchAsyncError(async (req, res, next) => {
   if (ourImpact) {
     ourImpact.contents.map((eachImpact, index) => {
       let iconName = eachImpact.icon;
-      eachImpact.icon = `${BACKEND_SERVER_PATH}/public/images/${iconName}`;
+      eachImpact.icon = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        iconName
+      )}`;
     });
   }
   res.status(200).json({ success: true, data: ourImpact });

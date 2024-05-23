@@ -65,28 +65,40 @@ const getResourcesImage = async (req, res, next) => {
   try {
     let resourcesImages = await Resources.findOne({ locale: "" });
     if (resourcesImages.procurement && resourcesImages.procurement != "") {
-      resourcesImages.procurement = `${BACKEND_SERVER_PATH}/public/images/${resourcesImages.procurement}`;
+      resourcesImages.procurement = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        resourcesImages.procurement
+      )}`;
     }
     if (resourcesImages.vacancy && resourcesImages.vacancy != "") {
-      resourcesImages.vacancy = `${BACKEND_SERVER_PATH}/public/images/${resourcesImages.vacancy}`;
+      resourcesImages.vacancy = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        resourcesImages.vacancy
+      )}`;
     }
     if (resourcesImages.volunteer && resourcesImages.volunteer != "") {
-      resourcesImages.volunteer = `${BACKEND_SERVER_PATH}/public/images/${resourcesImages.volunteer}`;
+      resourcesImages.volunteer = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        resourcesImages.volunteer
+      )}`;
     }
     if (
       resourcesImages.digitalLibrary &&
       resourcesImages.digitalLibrary != ""
     ) {
-      resourcesImages.digitalLibrary = `${BACKEND_SERVER_PATH}/public/images/${resourcesImages.digitalLibrary}`;
+      resourcesImages.digitalLibrary = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        resourcesImages.digitalLibrary
+      )}`;
     }
     if (
       resourcesImages.transformingLives &&
       resourcesImages.transformingLives != ""
     ) {
-      resourcesImages.transformingLives = `${BACKEND_SERVER_PATH}/public/images/${resourcesImages.transformingLives}`;
+      resourcesImages.transformingLives = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        resourcesImages.transformingLives
+      )}`;
     }
     if (resourcesImages.blog && resourcesImages.blog != "") {
-      resourcesImages.blog = `${BACKEND_SERVER_PATH}/public/images/${resourcesImages.blog}`;
+      resourcesImages.blog = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        resourcesImages.blog
+      )}`;
     }
 
     return res.status(200).json(resourcesImages);

@@ -10,7 +10,11 @@ exports.addNewsLetterUser = CatchAsyncError(async (req, res, next) => {
   const { name, email } = req.body;
   const user = await newsletterUser.findOne({ email: email });
   if (user) {
-    next(new Error("email already exists !", 400));
+    let error = {
+      message: "Email Already Exists",
+      status: 409,
+    };
+    next(error);
   }
   const newsLetterUser = new newsletterUser({
     name,

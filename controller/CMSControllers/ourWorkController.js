@@ -79,7 +79,9 @@ const getWork = async (req, res, next) => {
     let ourWork = await OurWork.findOne({ locale: locale });
     ourWork.work = ourWork.work.map((item) => {
       if (item.image && item.image !== "") {
-        item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+        item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          item.image
+        )}`;
         return item;
       } else {
         return item;
@@ -99,7 +101,9 @@ const getAllWork = async (req, res, next) => {
     ourWork.forEach((ourwork) => {
       ourwork.work = ourwork.work.map((item) => {
         if (item.image && item.image !== "") {
-          item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+          item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+            item.image
+          )}`;
           return item;
         } else {
           return item;

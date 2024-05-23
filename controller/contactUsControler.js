@@ -22,7 +22,9 @@ exports.getContactUs = catchAsyncError(async (req, res, next) => {
   if (!ourProgamObject) {
     next(new ErrorHandler("no single obj found !!"));
   }
-  ourProgamObject.headerImage = `${BACKEND_SERVER_PATH}/public/images/${ourProgamObject.headerImage}`;
+  ourProgamObject.headerImage = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+    ourProgamObject.headerImage
+  )}`;
   res.status(200).json({ success: true, data: ourProgamObject });
 });
 

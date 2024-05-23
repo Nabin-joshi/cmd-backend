@@ -81,7 +81,9 @@ const getOurPartner = async (req, res, next) => {
     let ourPartner = await OurPartner.findOne({ locale: locale });
     ourPartner.partner = ourPartner.partner.map((item) => {
       if (item.image && item.image !== "") {
-        item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+        item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          item.image
+        )}`;
         return item;
       } else {
         return item;
@@ -101,7 +103,9 @@ const getAllOurPartner = async (req, res, next) => {
     ourPartner.forEach((ourpartner) => {
       ourpartner.partner = ourpartner.partner.map((item) => {
         if (item.image && item.image !== "") {
-          item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+          item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+            item.image
+          )}`;
           return item;
         } else {
           return item;

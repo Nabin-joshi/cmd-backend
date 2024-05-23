@@ -66,7 +66,9 @@ exports.getAllTheJourney = CatchAsyncError(async (req, res, next) => {
 
   if (journey) {
     theJourney.contents.forEach((content) => {
-      content.image = `${BACKEND_SERVER_PATH}/public/images/${content.image}`;
+      content.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        content.image
+      )}`;
     });
   }
 

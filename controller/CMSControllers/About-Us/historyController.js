@@ -21,7 +21,9 @@ const getAllHistory = async (req, res, next) => {
     selectedHistory.forEach((History) => {
       History.history = History.history.map((item) => {
         if (item.image && item.image !== "") {
-          item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+          item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+            item.image
+          )}`;
           return item;
         } else {
           return item;
@@ -101,7 +103,9 @@ const getHistory = async (req, res, next) => {
     let selectedHistory = await History.findOne({ locale: locale });
     selectedHistory.history = selectedHistory.history.map((item) => {
       if (item.image && item.image !== "") {
-        item.image = `${BACKEND_SERVER_PATH}/public/images/${item.image}`;
+        item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          item.image
+        )}`;
         return item;
       } else {
         return item;

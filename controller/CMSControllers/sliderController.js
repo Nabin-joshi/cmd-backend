@@ -30,10 +30,14 @@ const getSliderContent = async (req, res, next) => {
   try {
     const sliderData = await Slider.findOne({ locale: locale });
     if (sliderData.image && sliderData.image !== "") {
-      sliderData.image = `${BACKEND_SERVER_PATH}/public/images/${sliderData.image}`;
+      sliderData.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        sliderData.image
+      )}`;
     }
     if (sliderData.video && sliderData.video !== "") {
-      sliderData.video = `${BACKEND_SERVER_PATH}/public/videos/${sliderData.video}`;
+      sliderData.video = `${BACKEND_SERVER_PATH}/public/videos/${encodeURIComponent(
+        sliderData.video
+      )}`;
     }
     return res.status(201).json({ slider: sliderData });
   } catch (error) {
