@@ -253,6 +253,8 @@ const mongoose = require("mongoose");
 exports.sendNewsLetterToGroups = CatchAsyncError(async (req, res, next) => {
   const reqData = req.body;
   const groupIds = reqData.groups.map((group) => group._id);
+  const content = req.body.content;
+  const subject = req.body.subject;
   const result = await newsLetterUserGroupMap.aggregate([
     {
       $match: {
@@ -283,16 +285,16 @@ exports.sendNewsLetterToGroups = CatchAsyncError(async (req, res, next) => {
   const transporter = nodemailer.createTransport({
     service: "Gmail", // Use the appropriate email service
     auth: {
-      user: "suraj.trent255@gmail.com", // Your email address
-      pass: "uvyv pvxt fzmg iorv", // Your email password or application-specific password
+      user: "newsletterkoshish@gmail.com", // Your email address
+      pass: "wkoj vlwi vbab fecp", // Your email password or application-specific password
     },
   });
   // Setup email data with unicode symbols
   const mailOptions = {
     from: "test@ishanitech.com", // Sender address
     to: mappedEmails, // List of recipients
-    subject: "Sending Files", // Subject line
-    text: "Please find the attached files.", // Plain text body
+    subject: subject && subject !== "" ? subject : "News Letter", // Subject line
+    text: content && content !== "" ? content : "", // Plain text body
     attachments: [
       {
         path: file, // File path
@@ -317,7 +319,6 @@ exports.sendNewsLetterToGroups = CatchAsyncError(async (req, res, next) => {
 exports.deleteGroup = async (req, res, next) => {
   try {
     const selectedGroupId = req.params.groupId;
-    console.log("Selected Group ID:", selectedGroupId);
 
     const group = await newsLetterGroup.findOne({
       _id: selectedGroupId.toString(),
@@ -337,6 +338,37 @@ exports.deleteGroup = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: "Group and associated users deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      message: "An error occurred while processing your request.",
+    });
+  }
+};
+
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const selectedUserId = req.params.userId;
+
+    const user = await newsletterUser.findOne({
+      _id: selectedUserId.toString(),
+    });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    await newsletterUser.deleteOne({ _id: selectedUserId });
+
+    await newsLetterUserGroupMap.deleteMany({ userId: selectedUserId });
+
+    return res.status(200).json({
+      success: true,
+      message: " users deleted successfully",
     });
   } catch (error) {
     console.error(error);
