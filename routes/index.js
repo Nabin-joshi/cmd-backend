@@ -30,6 +30,7 @@ const strategicPlanRoutes = require("./CMS-Routes/ourStrategicPlanRoutes");
 const footerLinksPageRoutes = require("./CMS-Routes/footerLinksPagesRoutes");
 const needHelpRoutes = require("./CMS-Routes/needHelpRoutes");
 const brandingRoutes = require("./CMS-Routes/brandingRoutes");
+const bannerImageRoute = require("./CMS-Routes/bannerImagesRoutes");
 
 // for login register and tokens
 router.use("/auth", authRoutes);
@@ -64,5 +65,6 @@ router.use("/strategicPlan", strategicPlanRoutes);
 router.use("/footerLinks", footerLinksPageRoutes);
 router.use("/needhelp", needHelpRoutes);
 router.use("/branding", brandingRoutes);
+router.use("/bannerimage", bannerImageRoute);
 
 module.exports = router;

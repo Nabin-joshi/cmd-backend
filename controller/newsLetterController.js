@@ -289,18 +289,33 @@ exports.sendNewsLetterToGroups = CatchAsyncError(async (req, res, next) => {
       pass: "wkoj vlwi vbab fecp", // Your email password or application-specific password
     },
   });
-  // Setup email data with unicode symbols
-  const mailOptions = {
-    from: "test@ishanitech.com", // Sender address
-    to: mappedEmails, // List of recipients
-    subject: subject && subject !== "" ? subject : "News Letter", // Subject line
-    text: content && content !== "" ? content : "", // Plain text body
-    attachments: [
-      {
-        path: file, // File path
-      },
-    ],
-  };
+  let mailOptions;
+
+  if (req.body.isGetInvolved) {
+    mailOptions = {
+      from: reqData.groups[0] ? reqData.groups[0] : "", // Sender address
+      to: "mrokka@gmail.com", // List of recipients
+      subject: subject && subject !== "" ? subject : "News Letter", // Subject line
+      text: content && content !== "" ? content : "", // Plain text body
+      attachments: [
+        {
+          path: file, // File path
+        },
+      ],
+    };
+  } else {
+    mailOptions = {
+      from: "test@ishanitech.com", // Sender address
+      to: mappedEmails, // List of recipients
+      subject: subject && subject !== "" ? subject : "News Letter", // Subject line
+      text: content && content !== "" ? content : "", // Plain text body
+      attachments: [
+        {
+          path: file, // File path
+        },
+      ],
+    };
+  }
 
   // Send email with defined transport object
   transporter.sendMail(mailOptions, (error, info) => {
