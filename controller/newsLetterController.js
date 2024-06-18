@@ -294,7 +294,7 @@ exports.sendNewsLetterToGroups = CatchAsyncError(async (req, res, next) => {
   if (req.body.isGetInvolved) {
     mailOptions = {
       from: reqData.groups[0] ? reqData.groups[0] : "", // Sender address
-      to: "mrokka@gmail.com", // List of recipients
+      to: "recruit@koshish.org.np", // List of recipients
       subject: subject && subject !== "" ? subject : "News Letter", // Subject line
       text: content && content !== "" ? content : "", // Plain text body
       attachments: [
