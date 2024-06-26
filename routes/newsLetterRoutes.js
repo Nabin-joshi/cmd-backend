@@ -12,6 +12,7 @@ const {
   sendNewsLetterToGroups,
   deleteGroup,
   deleteUser,
+  updateGroup,
 } = require("../controller/newsLetterController");
 const newsLetterRouter = express.Router();
 
@@ -35,5 +36,6 @@ newsLetterRouter.post("/sendNewsLetterToGroups", sendNewsLetterToGroups);
 newsLetterRouter.route("/newsLetterUserGroupMap").post(addNewsUserGroupMap);
 newsLetterRouter.route("/delete/group/:groupId").delete(deleteGroup);
 newsLetterRouter.route("/delete/newsletteruser/:userId").delete(deleteUser);
+newsLetterRouter.route("/update/group/:groupId").put(updateGroup);
 
 module.exports = newsLetterRouter;
