@@ -5,6 +5,7 @@ const path = require("path");
 const ErrorHandler = require("../utils/errorHandler");
 const fs = require("fs");
 const { BACKEND_SERVER_PATH } = require("../config/config");
+const { deletepreviousPhotos } = require("../utils/fileHandling");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -141,9 +142,12 @@ exports.updateStories = CatchAsyncError(async (req, res, next) => {
 
 // Delete a Stories
 exports.deleteStories = CatchAsyncError(async (req, res, next) => {
-  const stories = await Stories.findByIdAndDelete(req.params.id);
-  if (!stories) {
-    return res.status(404).json({ success: false, error: "Stories not found" });
-  }
-  res.status(200).json({ success: true, data: {} });
+  const storiesId = req.params.id;
+  const stories = await Stories.findOne();
+  let contents = stories.contents.filter((bc) => {
+    return !bc._id.equals(storiesId);
+  });
+  stories.contents = contents;
+  await stories.save();
+  res.status(200).json({ success: true, data: req.params.id });
 });
