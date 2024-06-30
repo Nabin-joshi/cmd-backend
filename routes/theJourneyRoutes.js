@@ -18,6 +18,6 @@ theJourneyRouter.get("/:id", theJourneyController.getTheJourneyById);
 theJourneyRouter.put("", theJourneyController.updateTheJourney);
 
 // delete
-theJourneyRouter.delete("/:id", auth, theJourneyController.deleteTheJourney);
+theJourneyRouter.delete("/delete/:id", theJourneyController.deleteTheJourney);
 
 module.exports = theJourneyRouter;

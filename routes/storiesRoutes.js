@@ -16,6 +16,6 @@ storiesRouter.get("/heading", storiesController.getStoriesHeading);
 storiesRouter.put("/update/:id", storiesController.updateStories);
 
 // delete
-storiesRouter.delete("/:id", auth, storiesController.deleteStories);
+storiesRouter.delete("/delete/:id", storiesController.deleteStories);
 
 module.exports = storiesRouter;

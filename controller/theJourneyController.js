@@ -4,6 +4,7 @@ const theJourney = require("../models/theJourney");
 const ErrorHandler = require("../utils/errorHandler");
 const fs = require("fs");
 const { BACKEND_SERVER_PATH } = require("../config/config");
+const TheJourney = require("../models/theJourney");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -121,11 +122,12 @@ exports.updateTheJourney = async (req, res, next) => {
 
 // Delete a TheJourney
 exports.deleteTheJourney = CatchAsyncError(async (req, res, next) => {
-  const theJourney = await theJourney.findByIdAndDelete(req.params.id);
-  if (!theJourney) {
-    return res
-      .status(404)
-      .json({ success: false, error: "TheJourney not found" });
-  }
-  res.status(200).json({ success: true, data: {} });
+  const theJourneyId = req.params.id;
+  const theJourney = await TheJourney.findOne();
+  let contents = theJourney.contents.filter((bc) => {
+    return !bc._id.equals(theJourneyId);
+  });
+  theJourney.contents = contents;
+  await theJourney.save();
+  res.status(200).json({ success: true, data: req.params.id });
 });
