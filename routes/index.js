@@ -31,6 +31,8 @@ const footerLinksPageRoutes = require("./CMS-Routes/footerLinksPagesRoutes");
 const needHelpRoutes = require("./CMS-Routes/needHelpRoutes");
 const brandingRoutes = require("./CMS-Routes/brandingRoutes");
 const bannerImageRoute = require("./CMS-Routes/bannerImagesRoutes");
+const publicationRoutes = require("./CMS-Routes/publicationRoutes");
+const quickLinkRoutes = require("./CMS-Routes/quicklinksRoutes");
 
 // for login register and tokens
 router.use("/auth", authRoutes);
@@ -66,5 +68,7 @@ router.use("/footerLinks", footerLinksPageRoutes);
 router.use("/needhelp", needHelpRoutes);
 router.use("/branding", brandingRoutes);
 router.use("/bannerimage", bannerImageRoute);
+router.use("/publication", publicationRoutes);
+router.use("/quicklink", quickLinkRoutes);
 
 module.exports = router;
