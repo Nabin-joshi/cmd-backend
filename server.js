@@ -39,6 +39,7 @@ app.use(
 );
 app.use("/public/images", express.static("public/images"));
 app.use("/public/videos", express.static("public/videos"));
+app.use("/public/pdf", express.static("public/pdf"));
 
 // app.use(errorHandler);
 app.use(error);
