@@ -119,3 +119,32 @@ exports.deleteThematicAreas = catchAsyncError(async (req, res, next) => {
   await aboutUs.save();
   res.status(200).json({ success: true, data: req.params.id });
 });
+
+// Update a boardMember
+exports.updateBoardCommitteeMembers = CatchAsyncError(
+  async (req, res, next) => {
+    const boardCommitte = req.body;
+    try {
+      const boardMember = await AboutUs.findOne();
+      let selectedData = boardMember.boardCommittees.find(
+        (item) => item._id == boardCommitte._id
+      );
+      if (selectedData) {
+        selectedData.name = boardCommitte.name;
+        selectedData.nameNepali = boardCommitte.nameNepali;
+        selectedData.gender = boardCommitte.gender;
+        selectedData.position = boardCommitte.position;
+        selectedData.role = boardCommitte.role;
+        if (req.file) {
+          selectedData.photo = req.file.filename;
+        }
+      }
+
+      const savedStatus = await boardMember.save();
+
+      res.status(200).json({ success: true, data: savedStatus });
+    } catch (error) {
+      next(error);
+    }
+  }
+);

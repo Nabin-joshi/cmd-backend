@@ -19,6 +19,10 @@ aboutUsRouter.delete(
   "/broadCommittee/:id",
   aboutUsController.deleteBoardCommitteeMembers
 );
+aboutUsRouter.put(
+  "/update/broadCommittee/:id",
+  aboutUsController.updateBoardCommitteeMembers
+);
 aboutUsRouter.delete(
   "/thematicAreas/:id",
   aboutUsController.deleteThematicAreas
