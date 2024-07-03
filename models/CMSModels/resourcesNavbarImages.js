@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const resourcesNavbarImages = new mongoose.Schema({
   locale: String,
-  procurement: String,
+  newsAndEvents: String,
   vacancy: String,
   volunteer: String,
   digitalLibrary: String,

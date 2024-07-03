@@ -14,7 +14,7 @@ const createBannerImages = async (req, res, next) => {
     ourWorkSupport,
     ourWorkOrgDevelopment,
     ourWorkESCS,
-    resourcesProcurement,
+    resourcesNewsAndEvents,
     resourcesVacancy,
     resourcesVolunteer,
     resourcesDigitalLibrary,
@@ -41,7 +41,7 @@ const createBannerImages = async (req, res, next) => {
       ourWorkSupport,
       ourWorkOrgDevelopment,
       ourWorkESCS,
-      resourcesProcurement,
+      resourcesNewsAndEvents,
       resourcesVacancy,
       resourcesVolunteer,
       resourcesDigitalLibrary,
@@ -97,8 +97,8 @@ const updateBannerImage = async (req, res, next) => {
         case "ourWorkESCS":
           selectedData.ourWorkESCS = req.file.filename;
           break;
-        case "resourcesProcurement":
-          selectedData.resourcesProcurement = req.file.filename;
+        case "resourcesNewsAndEvents":
+          selectedData.resourcesNewsAndEvents = req.file.filename;
           break;
         case "resourcesVacancy":
           selectedData.resourcesVacancy = req.file.filename;
@@ -132,7 +132,7 @@ const updateBannerImage = async (req, res, next) => {
           return;
       }
       await selectedData.save();
-      res.status(201).json({ msg: "Work Updated Successfully" });
+      res.status(201).json({ msg: "Resources Updated Successfully" });
     } else {
       res.status(201).json({ msg: "No Image Uploaded" });
     }
@@ -224,11 +224,11 @@ const getBannerImages = async (req, res, next) => {
     }
 
     if (
-      bannerImage.resourcesProcurement &&
-      bannerImage.resourcesProcurement !== ""
+      bannerImage.resourcesNewsAndEvents &&
+      bannerImage.resourcesNewsAndEvents !== ""
     ) {
-      bannerImage.resourcesProcurement = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
-        bannerImage.resourcesProcurement
+      bannerImage.resourcesNewsAndEvents = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        bannerImage.resourcesNewsAndEvents
       )}`;
     }
 

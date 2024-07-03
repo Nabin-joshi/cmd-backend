@@ -12,7 +12,7 @@ const bannerImages = new mongoose.Schema({
   ourWorkSupport: String,
   ourWorkOrgDevelopment: String,
   ourWorkESCS: String,
-  resourcesProcurement: String,
+  resourcesNewsAndEvents: String,
   resourcesVacancy: String,
   resourcesVolunteer: String,
   resourcesDigitalLibrary: String,

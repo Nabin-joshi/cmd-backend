@@ -4,7 +4,7 @@ const Resources = require("../../models/CMSModels/resourcesNavbarImages"); // En
 const createResourcesImage = async (req, res, next) => {
   const {
     locale,
-    procurement,
+    newsAndEvents,
     vacancy,
     volunteer,
     digitalLibrary,
@@ -17,7 +17,7 @@ const createResourcesImage = async (req, res, next) => {
   try {
     newData = new Resources({
       locale,
-      procurement,
+      newsAndEvents,
       vacancy,
       volunteer,
       digitalLibrary,
@@ -38,8 +38,8 @@ const updateResourcesImage = async (req, res, next) => {
     let selectedData = await Resources.findOne({ locale: "" });
 
     if (req.file) {
-      if (data.name === "procurement") {
-        selectedData.procurement = req.file.filename;
+      if (data.name === "newsAndEvents") {
+        selectedData.newsAndEvents = req.file.filename;
       } else if (data.name === "vacancy") {
         selectedData.vacancy = req.file.filename;
       } else if (data.name === "volunteer") {
@@ -52,7 +52,7 @@ const updateResourcesImage = async (req, res, next) => {
         selectedData.blog = req.file.filename;
       }
       await selectedData.save();
-      res.status(201).json({ msg: "Work Updated Successfully" });
+      res.status(201).json({ msg: "Resources Updated Successfully" });
     } else {
       res.status(201).json({ msg: "No Image Uploaded" });
     }
@@ -64,9 +64,9 @@ const updateResourcesImage = async (req, res, next) => {
 const getResourcesImage = async (req, res, next) => {
   try {
     let resourcesImages = await Resources.findOne({ locale: "" });
-    if (resourcesImages.procurement && resourcesImages.procurement != "") {
-      resourcesImages.procurement = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
-        resourcesImages.procurement
+    if (resourcesImages.newsAndEvents && resourcesImages.newsAndEvents != "") {
+      resourcesImages.newsAndEvents = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        resourcesImages.newsAndEvents
       )}`;
     }
     if (resourcesImages.vacancy && resourcesImages.vacancy != "") {
