@@ -1,20 +1,25 @@
 const router = require("express").Router();
-const blogController = require("../controller/blogController");
+const blogsController = require("../controller/blogController");
 const auth = require("../middlewares/auth");
+const getFileUploadMiddleware = require("../middlewares/fileUpload");
 
-// create
-router.post("", blogController.create);
+router.post("/developer/create", blogsController.create);
 
-// get all
-router.get("/all", blogController.getAll);
+router.get("/getAllBlogs", blogsController.getAll);
 
-// get blog by id
-router.get("/:id", blogController.getById);
+router.put(
+  "/updateBlogs/:locale",
+  getFileUploadMiddleware("public/images", [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+  ]).single("image"),
+  blogsController.update
+);
 
-// update
-router.put("/update/:id", blogController.update);
+router.delete("/delete/:locale", blogsController.deleteBlogs);
 
-// delete
-router.delete("/:id", auth, blogController.delete);
+router.get("/getBlogs/:locale", blogsController.get);
 
 module.exports = router;

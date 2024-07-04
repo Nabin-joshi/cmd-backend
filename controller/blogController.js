@@ -1,133 +1,133 @@
-const Joi = require("joi");
-const fs = require("fs");
-const Blog = require("../models/blogs");
 const { BACKEND_SERVER_PATH } = require("../config/config");
-const BlogDTO = require("../dto/blogDto");
-const blogs = require("../models/blogs");
+const Blogs = require("../models/blogs");
 
-const mongodbIdPattern = /^[0-9a-fA-F]{24}$/;
+const createBlogs = async (req, res, next) => {
+  const { locale, blogs } = req.body;
 
-const createBlog = async (req, res, next) => {
-  const createBlogSchema = Joi.object({
-    title: Joi.string().required(),
-    author: Joi.string().regex(mongodbIdPattern).required(),
-    content: Joi.string().required(),
-    photo: Joi.string().required(),
-  });
-
-  const { error } = createBlogSchema.validate(req.body);
-
-  if (error) {
-    return next(error);
-  }
-
-  const { title, author, content, photo } = req.body;
-
-  const buffer = Buffer.from(
-    photo.replace(/^data:image\/(png|jpg|jpeg);base64,/, ""),
-    "base64"
-  );
-
-  const imageName = `${Date.now()}-${author}.png`;
+  let newBlogs;
 
   try {
-    fs.writeFileSync(`public/images/${imageName}`, buffer);
-  } catch (error) {
-    return next(error);
+    newBlogs = new Blogs({ locale, blogs });
+    await newBlogs.save();
+    return res.status(201).json({ msg: "Blogs Created successfully" });
+  } catch (err) {
+    return next(err);
   }
-  let newBlog;
-  try {
-    newBlog = new Blog({
-      title,
-      author,
-      content,
-      photoPath: `${BACKEND_SERVER_PATH}/public/images/${imageName}`,
-    });
-    await newBlog.save();
-  } catch (error) {
-    return next(error);
-  }
-
-  return res.status(201).json({ blog: new BlogDTO(newBlog) });
 };
 
 const getAllBlogs = async (req, res, next) => {
-  let blogsDto;
   try {
-    const blogs = await Blog.find({});
-    blogsDto = blogs.map((blog) => new BlogDTO(blog));
-    return res.status(201).json({ blogs: blogsDto });
-  } catch (error) {
-    return next(error);
-  }
-};
-
-const getBlogsById = async (req, res, next) => {
-  let blog;
-
-  const getByIdSchema = Joi.object({
-    id: Joi.string().regex(mongodbIdPattern).required(),
-  });
-
-  const { error } = getByIdSchema.validate(req.params);
-
-  if (error) {
-    return next(error);
-  }
-  const { id } = req.params;
-  try {
-    blog = await Blog.findOne({ _id: id }).populate("author");
-    return res.status(201).json({ blog: blog });
-  } catch (error) {
-    return next(error);
+    let latestBlogs = await Blogs.find();
+    latestBlogs.forEach((Blogs) => {
+      Blogs.blogs = Blogs.blogs.map((item) => {
+        if (item.image && item.image !== "") {
+          item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+            item.image
+          )}`;
+          return item;
+        } else {
+          return item;
+        }
+      });
+    });
+    if (latestBlogs) {
+      return res.status(200).json(latestBlogs);
+    }
+  } catch (err) {
+    return next(err);
   }
 };
 
 const updateBlogs = async (req, res, next) => {
-  // validation if necessary using joi
+  const locale = req.params.locale;
+  const data = req.body;
 
-  const getBlog = req.body;
-  const blogId = req.params.id;
-
-  let selectedBlog;
-
+  let selectedData;
   try {
-    selectedBlog = await Blog.findOne({ _id: blogId });
-    if (selectedBlog) {
-      await Blog.updateOne(
-        { _id: blogId },
-        {
-          author: getBlog.author,
-          title: getBlog.title,
-          content: getBlog.content,
-          photoPath: getBlog.photo,
-        }
-      );
+    selectedData = await Blogs.findOne({ locale: locale });
+
+    let individualBlogs = selectedData.blogs.find(
+      (item) => item.id === data.id
+    );
+    if (individualBlogs) {
+      individualBlogs.title = data.title;
+      individualBlogs.day = data.day;
+      individualBlogs.month = data.month;
+      individualBlogs.contentDescription = data.contentDescription;
+      individualBlogs.details = data.details;
+      if (req.file) {
+        individualBlogs.image = req.file.filename;
+      }
+
+      await selectedData.save();
+      res.status(201).json({ msg: "Blog Updated Successfully" });
+    } else {
+      let newData = {
+        image: req.file ? req.file.filename : "",
+        title: data.title,
+        day: data.day,
+        month: data.month,
+        contentDescription: data.contentDescription,
+        details: data.details,
+      };
+      selectedData.blogs.push(newData);
+      selectedData.save();
+      res.status(201).json({ msg: "Blog saved Successfully" });
     }
-    return res.status(201).json({ msg: "Blog Updated Successfully" });
-  } catch (error) {
-    return next(error);
+  } catch (err) {
+    return next(err);
   }
 };
 
 const deleteBlogs = async (req, res, next) => {
-  const blogId = req.params.id;
+  let locale = req.params.locale;
+  const id = req.query.id;
 
   try {
-    await Blog.deleteOne({ _id: blogId });
-  } catch (error) {
-    return next(error);
+    let latestBlogs = await Blogs.findOne({ locale: locale });
+    const indexToDelete = latestBlogs.blogs.findIndex(
+      (item) => item._id.toString() === id.toString()
+    );
+
+    if (indexToDelete !== -1) {
+      latestBlogs.blogs.splice(indexToDelete, 1);
+    }
+
+    await latestBlogs.save();
+    return res.status(201).json({ msg: "Blog Deleted Successfully" });
+  } catch (err) {
+    return next(err);
   }
-
-  return res.status(201).json({ msg: "Blog deleted SuccessFully" });
 };
 
-const blogController = {
-  create: createBlog,
-  getAll: getAllBlogs,
-  getById: getBlogsById,
+const getBlogs = async (req, res, next) => {
+  let locale = req.params.locale;
+
+  try {
+    let latestBlogs = await Blogs.findOne({ locale: locale });
+    latestBlogs.blogs = latestBlogs.blogs.map((item) => {
+      if (item.image && item.image !== "") {
+        item.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          item.image
+        )}`;
+        return item;
+      } else {
+        return item;
+      }
+    });
+    if (latestBlogs) {
+      return res.status(200).json(latestBlogs);
+    }
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const blogsController = {
+  create: createBlogs,
   update: updateBlogs,
-  delete: deleteBlogs,
+  get: getBlogs,
+  getAll: getAllBlogs,
+  deleteBlogs: deleteBlogs,
 };
-
-module.exports = blogController;
+module.exports = blogsController;

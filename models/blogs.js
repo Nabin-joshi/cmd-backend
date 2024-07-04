@@ -1,15 +1,19 @@
 const mongoose = require("mongoose");
 
-const { Schema } = mongoose;
+const blogs = new mongoose.Schema({
+  locale: String,
+  blogs: [
+    {
+      image: String,
+      title: String,
+      day: String,
+      month: String,
+      contentDescription: String,
+      details: String,
+    },
+  ],
+});
 
-const blogSchema = new Schema(
-  {
-    title: { type: String, required: true },
-    content: { type: String, required: true },
-    photoPath: { type: String, required: true },
-    author: { type: mongoose.SchemaTypes.ObjectId, ref: "User" },
-  },
-  { timestamps: true }
-);
+const Blogs = mongoose.model("Blogs", blogs);
 
-module.exports = mongoose.model("Blog", blogSchema, "blogs");
+module.exports = Blogs;

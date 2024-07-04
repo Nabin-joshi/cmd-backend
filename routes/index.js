@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authRoutes = require("./authRoutes");
-const blogRoutes = require("./blogRoutes");
+
 const footerRouter = require("./footerRoutes");
 const newsletterUser = require("../models/newsletterUser");
 const newsLetterRouter = require("./newsLetterRoutes");
@@ -33,12 +33,12 @@ const brandingRoutes = require("./CMS-Routes/brandingRoutes");
 const bannerImageRoute = require("./CMS-Routes/bannerImagesRoutes");
 const publicationRoutes = require("./CMS-Routes/publicationRoutes");
 const quickLinkRoutes = require("./CMS-Routes/quicklinksRoutes");
+const blogRoutes = require("./blogRoutes");
 
 // for login register and tokens
 router.use("/auth", authRoutes);
 
 // testing routes
-router.use("/blog", blogRoutes);
 
 router.use("/newsLetter", newsLetterRouter);
 router.use("/oI", ourImpactRoutes);
@@ -70,5 +70,6 @@ router.use("/branding", brandingRoutes);
 router.use("/bannerimage", bannerImageRoute);
 router.use("/publication", publicationRoutes);
 router.use("/quicklink", quickLinkRoutes);
+router.use("/blogs", blogRoutes);
 
 module.exports = router;
