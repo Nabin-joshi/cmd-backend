@@ -21,6 +21,12 @@ aboutUsRouter.delete(
 );
 aboutUsRouter.put(
   "/update/broadCommittee/:id",
+  getFileUploadMiddleware("public/images", [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+  ]).single("image"),
   aboutUsController.updateBoardCommitteeMembers
 );
 aboutUsRouter.delete(
