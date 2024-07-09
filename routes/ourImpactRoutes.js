@@ -15,6 +15,6 @@ ourImpactRouter.get("/:id", ourImpactController.getOurImpactById);
 ourImpactRouter.put("", ourImpactController.updateOurImpacts);
 
 // delete
-ourImpactRouter.delete("/:id", auth, ourImpactController.deleteOurImpact);
+ourImpactRouter.delete("/delete/:id", ourImpactController.deleteOurImpact);
 
 module.exports = ourImpactRouter;

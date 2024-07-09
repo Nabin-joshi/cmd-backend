@@ -24,6 +24,9 @@ const ourImpactSchema = new mongoose.Schema({
       descNepali: {
         type: String,
       },
+      display: {
+        type: Boolean,
+      },
     },
   ],
 });

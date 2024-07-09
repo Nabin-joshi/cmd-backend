@@ -110,6 +110,7 @@ exports.updateOurImpacts = async (req, res, next) => {
         matchedOurImpact.countNepali = obj.countNepali;
         matchedOurImpact.desc = obj.desc;
         matchedOurImpact.descNepali = obj.descNepali;
+        matchedOurImpact.display = obj.display;
         if (obj.newIcon) {
           if (matchedOurImpact.icon) {
             const prevImagePath = `${process.env.FILE_PATH}/images/${matchedOurImpact.icon}`;
@@ -137,12 +138,14 @@ exports.updateOurImpacts = async (req, res, next) => {
 };
 
 // Delete a OurImpact
+
 exports.deleteOurImpact = CatchAsyncError(async (req, res, next) => {
-  const ourImpact = await OurImpact.findByIdAndDelete(req.params.id);
-  if (!ourImpact) {
-    return res
-      .status(404)
-      .json({ success: false, error: "OurImpact not found" });
-  }
-  res.status(200).json({ success: true, data: {} });
+  const ourImpactId = req.params.id;
+  const ourImpact = await OurImpact.findOne();
+  let contents = ourImpact.contents.filter((bc) => {
+    return !bc._id.equals(ourImpactId);
+  });
+  ourImpact.contents = contents;
+  await ourImpact.save();
+  res.status(200).json({ success: true, data: req.params.id });
 });
