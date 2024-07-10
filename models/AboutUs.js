@@ -81,6 +81,12 @@ const aboutUsSchema = new mongoose.Schema({
       positionNepali: {
         type: String,
       },
+      description: {
+        type: String,
+      },
+      descriptionNepali: {
+        type: String,
+      },
       role: {
         type: String,
       },

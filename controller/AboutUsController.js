@@ -134,6 +134,8 @@ exports.updateBoardCommitteeMembers = async (req, res, next) => {
       selectedData.gender = boardCommitte.gender;
       selectedData.position = boardCommitte.position;
       selectedData.positionNepali = boardCommitte.positionNepali;
+      selectedData.description = boardCommitte.description;
+      selectedData.descriptionNepali = boardCommitte.descriptionNepali;
       selectedData.role = boardCommitte.role;
       if (req.file) {
         selectedData.photo = req.file.filename;
