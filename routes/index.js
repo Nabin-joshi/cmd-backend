@@ -34,6 +34,8 @@ const bannerImageRoute = require("./CMS-Routes/bannerImagesRoutes");
 const publicationRoutes = require("./CMS-Routes/publicationRoutes");
 const quickLinkRoutes = require("./CMS-Routes/quicklinksRoutes");
 const blogRoutes = require("./blogRoutes");
+const navbarText = require("./CMS-Routes/navbarTextRoutes");
+const geoColorRoute = require("./CMS-Routes/geoColorRoutes");
 
 // for login register and tokens
 router.use("/auth", authRoutes);
@@ -71,5 +73,7 @@ router.use("/bannerimage", bannerImageRoute);
 router.use("/publication", publicationRoutes);
 router.use("/quicklink", quickLinkRoutes);
 router.use("/blogs", blogRoutes);
+router.use("/navbartext", navbarText);
+router.use("/geocolor", geoColorRoute);
 
 module.exports = router;
