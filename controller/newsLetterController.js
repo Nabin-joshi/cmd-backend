@@ -5,6 +5,8 @@ const newsletterUser = require("../models/newsletterUser");
 const CatchAsyncError = require("../utils/catchAsyncError");
 const ErrorHandler = require("../utils/errorHandler");
 const nodemailer = require("nodemailer");
+const DonationUserDetails = require("../models/CMSModels/donationUserDetail");
+const DonationDetail = require("../models/CMSModels/donationDetail");
 
 exports.addNewsLetterUser = CatchAsyncError(async (req, res, next) => {
   const { name, email } = req.body;
@@ -182,8 +184,6 @@ const { updateOne } = require("../models/users");
 const { getImageUrl } = require("../utils/fileHandling");
 
 exports.donateUs = CatchAsyncError(async (req, res, next) => {
-  let amount = parseFloat(req.body.amount) * 100;
-  const custInfo = req.body.customer_info;
   var options = {
     method: "POST",
     url: "https://a.khalti.com/api/v2/epayment/initiate/",
@@ -192,20 +192,44 @@ exports.donateUs = CatchAsyncError(async (req, res, next) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      return_url: "http://localhost:5000/api/newsLetter/donateUs",
-      website_url: "https://localhost:3000/",
-      amount: amount,
-      purchase_order_id: "Order01",
-      purchase_order_name: "test",
-      customer_info: custInfo,
+      return_url: req.body.return_url,
+      website_url: req.body.website_url,
+      amount: req.body.amount,
+      purchase_order_id: req.body.purchase_order_id,
+      purchase_order_name: req.body.purchase_order_name,
+      customer_info: {
+        name: req.body.customer_info.name,
+        email: req.body.customer_info.email,
+        phone: req.body.customer_info.phone,
+      },
     }),
   };
-  request(options, function (error, response) {
-    if (error) throw new Error(error);
-    console.log(response.body);
-    res
-      .status(201)
-      .json({ success: true, responseData: JSON.parse(response.body) });
+  request(options, async function (error, response) {
+    if (error) throw next(error);
+    if (response.body) {
+      let resData = JSON.parse(response.body);
+      if (resData.status_code) {
+        next({ status: resData.status_code, message: "something went worng" });
+      } else {
+        res
+          .status(201)
+          .json({ success: true, responseData: JSON.parse(response.body) });
+        try {
+          let customer_info = {
+            name: req.body.customer_info.name,
+            email: req.body.customer_info.email,
+            phone: req.body.customer_info.phone,
+          };
+          let data = new DonationUserDetails({
+            purchase_order_id: req.body.purchase_order_id,
+            customer_info: customer_info,
+          });
+          await data.save();
+        } catch (error) {
+          next(error);
+        }
+      }
+    }
   });
 });
 
@@ -230,25 +254,33 @@ exports.handleKhaltiCallBack = CatchAsyncError(async (req, res, next) => {
     Authorization: `Key ${process.env.KHALTI_SECRET_KEY}`,
     "Content-Type": "application/json",
   };
+  // if()
+  if (req.query.status == "Completed") {
+    const response = await axios.post(
+      "https://a.khalti.com/api/v2/epayment/lookup/",
+      { pidx },
+      { headers }
+    );
 
-  const response = await axios.post(
-    "https://a.khalti.com/api/v2/epayment/lookup/",
-    { pidx },
-    { headers }
-  );
-  console.log(response.data);
-  if (response.data.status !== "Completed") {
-    return res.status(400).json({ error: "Payment not completed" });
+    if (response.data) {
+      let newData = new DonationDetail({
+        pidx: response.data.pidx,
+        total_amount: response.data.total_amount,
+        status: response.data.status,
+        transaction_id: response.data.transaction_id,
+        fee: response.data.fee,
+        refunded: response.data.refunded,
+        purchase_order_id: req.query.purchase_order_id,
+      });
+      await newData.save();
+      res.redirect(`${process.env.FONTEND_SERVER_PATH}/donation`);
+    }
+  } else {
+    res.redirect(`${process.env.FONTEND_SERVER_PATH}/donation`);
   }
-  console.log(purchase_order_id, pidx);
-  req.transaction_uuid = purchase_order_id;
-  req.transaction_code = pidx;
-  // const html = `<a href="http://localhost:3000">gotomainpage</a> `;
-  // return res
-  //   .status(201)
-  //   .json({ success: true, transactionInfo: response.data });
 });
 const mongoose = require("mongoose");
+const { BACKEND_SERVER_PATH } = require("../config/config");
 
 exports.sendNewsLetterToGroups = CatchAsyncError(async (req, res, next) => {
   const reqData = req.body;
