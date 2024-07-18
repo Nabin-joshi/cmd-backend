@@ -65,6 +65,9 @@ const aboutUsSchema = new mongoose.Schema({
   ],
   boardCommittees: [
     {
+      indexNo: {
+        type: String,
+      },
       name: {
         type: String,
       },
