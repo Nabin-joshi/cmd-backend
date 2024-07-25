@@ -36,6 +36,7 @@ const quickLinkRoutes = require("./CMS-Routes/quicklinksRoutes");
 const blogRoutes = require("./blogRoutes");
 const navbarText = require("./CMS-Routes/navbarTextRoutes");
 const geoColorRoute = require("./CMS-Routes/geoColorRoutes");
+const searchRoute = require("./searchRoutes");
 
 // for login register and tokens
 router.use("/auth", authRoutes);
@@ -75,5 +76,6 @@ router.use("/quicklink", quickLinkRoutes);
 router.use("/blogs", blogRoutes);
 router.use("/navbartext", navbarText);
 router.use("/geocolor", geoColorRoute);
+router.use("/search", searchRoute);
 
 module.exports = router;
