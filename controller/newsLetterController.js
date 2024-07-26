@@ -186,7 +186,7 @@ const { getImageUrl } = require("../utils/fileHandling");
 exports.donateUs = CatchAsyncError(async (req, res, next) => {
   var options = {
     method: "POST",
-    url: "https://a.khalti.com/api/v2/epayment/initiate/",
+    url: "https://khalti.com/api/v2/epayment/initiate/",
     headers: {
       Authorization: `key ${process.env.KHALTI_SECRET_KEY}`,
       "Content-Type": "application/json",
@@ -257,7 +257,7 @@ exports.handleKhaltiCallBack = CatchAsyncError(async (req, res, next) => {
   // if()
   if (req.query.status == "Completed") {
     const response = await axios.post(
-      "https://a.khalti.com/api/v2/epayment/lookup/",
+      "https://khalti.com/api/v2/epayment/lookup/",
       { pidx },
       { headers }
     );
