@@ -197,11 +197,6 @@ exports.donateUs = CatchAsyncError(async (req, res, next) => {
       amount: req.body.amount,
       purchase_order_id: req.body.purchase_order_id,
       purchase_order_name: req.body.purchase_order_name,
-      customer_info: {
-        name: req.body.customer_info.name,
-        email: req.body.customer_info.email,
-        phone: req.body.customer_info.phone,
-      },
     }),
   };
   request(options, async function (error, response) {
