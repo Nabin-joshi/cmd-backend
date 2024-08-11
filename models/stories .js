@@ -28,6 +28,14 @@ const storiesSchema = new mongoose.Schema({
       display: {
         type: Boolean,
       },
+      detail: {
+        type: String,
+        default: "",
+      },
+      detailNepali: {
+        type: String,
+        default: "",
+      },
     },
   ],
   readMoreBtnColor: {
