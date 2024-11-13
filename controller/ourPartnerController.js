@@ -30,6 +30,7 @@ const updateOurPartner = async (req, res, next) => {
     );
     if (individualPartner) {
       individualPartner.content = data.content;
+      individualPartner.type = data.type;
       if (req.file) {
         individualPartner.image = req.file.filename;
       }
@@ -40,6 +41,7 @@ const updateOurPartner = async (req, res, next) => {
       let newData = {
         image: req.file ? req.file.filename : "",
         content: data.content,
+        type: data.type,
       };
       selectedData.partner.push(newData);
       selectedData.save();
