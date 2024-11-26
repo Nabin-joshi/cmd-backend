@@ -13,6 +13,8 @@ const {
   deleteGroup,
   deleteUser,
   updateGroup,
+  initiatePayment,
+  paymentCallbackTransactionList,
 } = require("../controller/newsLetterController");
 const newsLetterRouter = express.Router();
 
@@ -37,5 +39,7 @@ newsLetterRouter.route("/newsLetterUserGroupMap").post(addNewsUserGroupMap);
 newsLetterRouter.route("/delete/group/:groupId").delete(deleteGroup);
 newsLetterRouter.route("/delete/newsletteruser/:userId").delete(deleteUser);
 newsLetterRouter.route("/update/group/:groupId").put(updateGroup);
+newsLetterRouter.route("/hbl/initate").get(initiatePayment);
+newsLetterRouter.route("/hbl/inquiry").get(paymentCallbackTransactionList);
 
 module.exports = newsLetterRouter;

@@ -1,5 +1,6 @@
 const { BACKEND_SERVER_PATH } = require("../../config/config");
 const OurWork = require("../../models/CMSModels/ourWork");
+const equalizeArrayLengths = require("../equalizeController");
 
 const createWork = async (req, res, next) => {
   const { description, locale, work } = req.body;
@@ -98,6 +99,12 @@ const getWork = async (req, res, next) => {
 const getAllWork = async (req, res, next) => {
   try {
     let ourWork = await OurWork.find();
+    let emptyWork = {
+      image: "",
+      header: "",
+      details: "",
+    };
+    ourWork = equalizeArrayLengths(ourWork, "work", emptyWork);
     ourWork.forEach((ourwork) => {
       ourwork.work = ourwork.work.map((item) => {
         if (item.image && item.image !== "") {

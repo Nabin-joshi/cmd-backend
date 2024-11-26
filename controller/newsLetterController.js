@@ -462,3 +462,378 @@ exports.deleteUser = async (req, res, next) => {
     });
   }
 };
+
+// Himalayan Bank Controller
+const jose = require("node-jose");
+const jwt = require("jsonwebtoken");
+const { JWK, JWE, JWS } = require("jose");
+const { camelCase } = require("lodash");
+const { createPublicKey } = require("crypto");
+const crypto = require("crypto");
+
+const getEncryptedSignedToken = (obj, apiKey, objectKey) => {
+  if (!obj) {
+    throw new Error("obj cannot be null or undefined");
+  }
+
+  if (!apiKey) {
+    throw new Error("apiKey cannot be null or undefined");
+  }
+
+  const jObj = {
+    [camelCase(objectKey)]: obj,
+    aud: "PacoAudience",
+    iss: "PacoIssuer",
+  };
+  const signingKey = process.env.MerchantSigningPrivate;
+  const encryptingKey = process.env.PacoPublicKey;
+
+  const signedToken = JWS.sign(jObj, signingKey, { algorithm: "PS256" });
+
+  const encryptedToken = JWE.encrypt(signedToken, encryptingKey);
+
+  return encryptedToken;
+};
+
+const getPublicKey = (key) => {
+  const publicKeyDecoded = Buffer.from(key, "base64");
+
+  const rsaKey = createPublicKey({
+    key: publicKeyDecoded,
+    format: "der",
+    type: "spki",
+  });
+
+  const jwk = JWK.asKey(rsaKey, "pem");
+  jwk.kid = "7664a2ed0dee4879bdfca0e8ce1ac313";
+
+  return jwk;
+};
+
+function getPrivateKey(key) {
+  const privateKeyDecoded = Buffer.from(key, "base64");
+
+  const rsaKey = createPrivateKey({
+    key: privateKeyDecoded,
+    format: "der",
+    type: "pkcs8",
+  });
+
+  const jwk = JWK.asKey(rsaKey, "pem");
+
+  return jwk;
+}
+
+function getEncryptingPublicKey(key) {
+  const publicKey = getPublicKey(key);
+  const alg = "RSA-OAEP";
+  const enc = "A128CBC-HS256";
+
+  return { key: publicKey, alg, enc };
+}
+
+function encryptedJwt(apiKey, message) {
+  if (!apiKey) {
+    throw new Error("apiKey is required");
+  }
+
+  const handler = new jose.SignJWT(); // Assuming using `jose` for JWT handling.
+
+  const jobj = {
+    request: message,
+    iss: apiKey,
+    aud: "PacoAudience",
+    CompanyApiKey: apiKey,
+  };
+
+  const signingKey = process.env.MerchantSigningPrivate;
+  const encryptingKey = process.env.PacoPublicKey;
+
+  const signingCredentials = {
+    key: signingKey,
+    alg: "PS256", // Equivalent to RsaSsaPssSha256
+  };
+
+  const encryptingCredentials = {
+    key: encryptingKey,
+    alg: "RSA-OAEP",
+    enc: "A128CBC-HS256",
+  };
+
+  // Signing the token
+  const token = handler
+    .setProtectedHeader({ alg: signingCredentials.alg })
+    .setPayload(jobj)
+    .sign(signingCredentials.key);
+
+  // Encrypting the token
+  const encryptedToken = jose.JWE.encrypt(token, encryptingCredentials.key, {
+    alg: encryptingCredentials.alg,
+    enc: encryptingCredentials.enc,
+  });
+
+  return encryptedToken;
+}
+
+async function decryptJwt(apiKey, request) {
+  const { jwtVerify, compactDecrypt, decodeJwt } = require("jose");
+
+  if (!request) {
+    return null;
+  }
+
+  // Get keys
+  const sign = process.env.PacoSigningPublic;
+  const enc = process.env.EncryptedPrivateKey;
+
+  try {
+    // Decrypt the token
+    const { plaintext: decryptedToken } = await compactDecrypt(request, enc);
+
+    // Validate the token
+    const { payload, protectedHeader } = await jwtVerify(decryptedToken, sign, {
+      audience: ["PacoAudience", apiKey],
+      issuer: "PacoIssuer",
+      algorithms: ["PS256"], // Equivalent to RsaSsaPssSha256
+    });
+
+    // Decode the payload
+    const encodedPayload = decodeJwt(decryptedToken);
+    const json = JSON.stringify(payload);
+
+    return json;
+  } catch (err) {
+    console.error("Token decryption/validation failed:", err);
+    return null;
+  }
+}
+
+exports.initiatePayment = async (req, res, next) => {
+  const accessToken = "e6c5e2756e2e41878c852bce8d208632";
+  const cardNumber = "4706860000002325";
+  const cardExpiry = "1225";
+  const cardCvv = "761";
+  const cardPayer = "Demo Sample";
+  const amount = 1000.0;
+  const amountText = "000000100000";
+  const amountCurrency = "THB";
+  const decimalPlaces = 2;
+  const request3dsFlag = "N";
+  const officeId = "DEMOOFFICE";
+
+  const paymentEndpoint =
+    "https://payment-api.demo-paco.2c2p.com/1.0/Payment/paymentUi";
+
+  const stringRequest = {
+    apiRequest: {
+      requestMessageID: crypto.randomUUID(),
+      requestDateTime: new Date().toISOString(),
+      language: "en-US",
+    },
+    officeId: officeId,
+    orderNo: Date.now().toString(),
+    productDescription: `desc for ${Date.now()}`,
+    paymentType: "CC",
+    paymentCategory: "ECOM",
+    creditCardDetails: {
+      cardNumber: cardNumber,
+      cardExpiryMMYY: cardExpiry,
+      cvvCode: cardCvv,
+      payerName: cardPayer,
+    },
+    storeCardDetails: {
+      storeCardFlag: "N",
+      storedCardUniqueID: "{{guid}}",
+    },
+    installmentPaymentDetails: {
+      ippFlag: "N",
+      installmentPeriod: 0,
+      interestType: null,
+    },
+    mcpFlag: "N",
+    request3dsFlag: request3dsFlag,
+    transactionAmount: {
+      amountText: amountText,
+      currencyCode: amountCurrency,
+      decimalPlaces: decimalPlaces,
+      amount: amount,
+    },
+    notificationURLs: {
+      confirmationURL: "http://example-confirmation.com",
+      failedURL: "http://example-failed.com",
+      cancellationURL: "http://example-cancellation.com",
+      backendURL: "http://example-backend.com",
+    },
+    deviceDetails: {
+      browserIp: "1.0.0.1",
+      browser: "Postman Browser",
+      browserUserAgent: "PostmanRuntime/7.26.8 - not from header",
+      mobileDeviceFlag: "N",
+    },
+    purchaseItems: [
+      {
+        purchaseItemType: "ticket",
+        referenceNo: "2322460376026",
+        purchaseItemDescription: "Bundled insurance",
+        purchaseItemPrice: {
+          amountText: amountText,
+          currencyCode: amountCurrency,
+          decimalPlaces: decimalPlaces,
+          amount: amount,
+        },
+        subMerchantID: "string",
+        passengerSeqNo: 1,
+      },
+    ],
+    customFieldList: [
+      {
+        fieldName: "TestField",
+        fieldValue: "This is test",
+      },
+    ],
+  };
+
+  try {
+    // Generate an RSA key pair
+    const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
+      modulusLength: 4096,
+      publicKeyEncoding: {
+        type: "spki",
+        format: "pem",
+      },
+      privateKeyEncoding: {
+        type: "pkcs8",
+        format: "pem",
+      },
+    });
+
+    // Create JWT with signing
+    const jwtToken = jwt.sign(stringRequest, privateKey, {
+      algorithm: "RS256",
+      expiresIn: "1h",
+      audience: "PacoAudience",
+      issuer: accessToken,
+    });
+
+    // Create a JWK key object from the public key
+    const keyStore = await jose.JWK.createKeyStore();
+    const jwkPublicKey = await keyStore.add(publicKey, "pem");
+
+    // Encrypt the JWT
+    const encryptor = jose.JWE.createEncrypt(
+      {
+        format: "compact",
+        algorithm: "RSA-OAEP",
+        encryption: "A256CBC-HS512",
+      },
+      jwkPublicKey
+    );
+
+    const encryptedJWT = await encryptor.update(jwtToken).final();
+
+    // Make the HTTP POST request
+    const response = await axios.post(paymentEndpoint, encryptedJWT, {
+      headers: {
+        "Content-Type": "application/jose",
+        CompanyApiKey: accessToken,
+        Accept: "application/jose",
+      },
+    });
+
+    res.status(201).json({ success: true, responseData: response.data });
+  } catch (error) {
+    console.error("Error executing payment:", error.message);
+    res
+      .status(500)
+      .json({ success: false, message: "Payment initiation failed." });
+  }
+};
+
+// exports.paymentCallback = async (req, res, next) => {
+//   const accessToken = "e6c5e2756e2e41878c852bce8d208632";
+//   const orderNo = "1635476979216";
+//   const officeId = "DEMOOFFICE";
+//   const PaymentEndpoint = "https://core.demo-paco.2c2p.com/";
+
+//   try {
+//     const httpClient = axios.create({
+//       baseURL: PaymentEndpoint,
+//       headers: {
+//         apiKey: accessToken,
+//       },
+//     });
+
+//     const stringRequest = JSON.stringify({
+//       apiRequest: {
+//         requestMessageID: crypto.randomUUID(),
+//         requestDateTime: new Date().toISOString(),
+//         language: "en-US",
+//       },
+//       advSearchParams: {
+//         controllerInternalID: null,
+//         officeId: [officeId],
+//         orderNo: [orderNo],
+//         invoiceNo2C2P: null,
+//         fromDate: "0001-01-01T00:00:00",
+//         toDate: "0001-01-01T00:00:00",
+//         amountFrom: null,
+//         amountTo: null,
+//       },
+//     });
+
+//     const apiResponse = await httpClient.get(
+//       "api/1.0/Inquiry/transactionDetails",
+//       stringRequest,
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+//     res.status(200).json({ success: true, responseData: apiResponse });
+//   } catch (error) {
+//     res.status(500).json({ error: error });
+//   }
+// };
+
+exports.paymentCallbackTransactionList = async (req, res, next) => {
+  const accessToken = "e6c5e2756e2e41878c852bce8d208632";
+  const orderNo = "1635476979216";
+  const officeId = "DEMOOFFICE";
+  const paymentEndpoint =
+    "https://core.demo-paco.2c2p.com/api/1.0/Inquiry/transactionList"; // Replace with your actual payment endpoint
+
+  try {
+    const requestBody = {
+      apiRequest: {
+        requestMessageID: crypto.randomUUID(), // Function to generate a GUID
+        requestDateTime: new Date().toISOString(),
+        language: "en-US",
+      },
+      advSearchParams: {
+        controllerInternalID: null,
+        officeId: [officeId],
+        orderNo: [orderNo],
+        invoiceNo2C2P: null,
+        fromDate: "0001-01-01T00:00:00",
+        toDate: "0001-01-01T00:00:00",
+        amountFrom: null,
+        amountTo: null,
+      },
+    };
+
+    const response = await fetch(`${paymentEndpoint}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apiKey: accessToken,
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    res.status(200).json({ success: true, responseData: response });
+  } catch (error) {
+    res.status(500).json({ error: error });
+    throw error; // Rethrow the error
+  }
+};

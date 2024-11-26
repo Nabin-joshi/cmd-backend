@@ -1,4 +1,5 @@
 const Volenteer = require("../../models/CMSModels/volenteer");
+const equalizeArrayLengths = require("../equalizeController");
 
 const createVolenteer = async (req, res, next) => {
   const { locale, volenteer } = req.body;
@@ -17,6 +18,11 @@ const createVolenteer = async (req, res, next) => {
 const getAllVolenteer = async (req, res, next) => {
   try {
     let volenteer = await Volenteer.find();
+    let emptyVolenteer = {
+      content: "",
+      name: "",
+    };
+    volenteer = equalizeArrayLengths(volenteer, "volenteer", emptyVolenteer);
     if (volenteer) {
       return res.status(200).json(volenteer);
     } else {
@@ -49,7 +55,7 @@ const updateVolenteer = async (req, res, next) => {
         content: data.content,
         name: data.name,
       };
-      selectedData.volen.push(newData);
+      selectedData.volenteer.push(newData);
       selectedData.save();
       res.status(201).json({ msg: "Volenteer saved Successfully" });
     }

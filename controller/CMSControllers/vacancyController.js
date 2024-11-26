@@ -1,4 +1,5 @@
 const Vacancy = require("../../models/CMSModels/vacancy");
+const equalizeArrayLengths = require("../equalizeController");
 
 const createVacancy = async (req, res, next) => {
   const { locale, vacancy } = req.body;
@@ -17,6 +18,11 @@ const createVacancy = async (req, res, next) => {
 const getAllVacancy = async (req, res, next) => {
   try {
     let vacancy = await Vacancy.find();
+    let emptyVacancy = {
+      content: "",
+      name: "",
+    };
+    vacancy = equalizeArrayLengths(vacancy, "vacancy", emptyVacancy);
     if (vacancy) {
       return res.status(200).json(vacancy);
     } else {

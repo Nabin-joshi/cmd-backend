@@ -1,5 +1,7 @@
+const { isFQDN } = require("validator");
 const { BACKEND_SERVER_PATH } = require("../config/config");
 const Blogs = require("../models/blogs");
+const equalizeArrayLengths = require("./equalizeController");
 
 const createBlogs = async (req, res, next) => {
   const { locale, blogs } = req.body;
@@ -18,6 +20,15 @@ const createBlogs = async (req, res, next) => {
 const getAllBlogs = async (req, res, next) => {
   try {
     let latestBlogs = await Blogs.find();
+    let emptyBlog = {
+      image: "",
+      title: "",
+      day: "",
+      month: "",
+      contentDescription: "",
+      details: "",
+    };
+    latestBlogs = equalizeArrayLengths(latestBlogs, "blogs", emptyBlog);
     latestBlogs.forEach((Blogs) => {
       Blogs.blogs = Blogs.blogs.map((item) => {
         if (item.image && item.image !== "") {
@@ -41,7 +52,9 @@ const getAllBlogs = async (req, res, next) => {
 const updateBlogs = async (req, res, next) => {
   const locale = req.params.locale;
   const data = req.body;
-
+  if (!locale) {
+    res.status(400).json({ msg: "Invalid request" });
+  }
   let selectedData;
   try {
     selectedData = await Blogs.findOne({ locale: locale });
@@ -63,12 +76,12 @@ const updateBlogs = async (req, res, next) => {
       res.status(201).json({ msg: "Blog Updated Successfully" });
     } else {
       let newData = {
-        image: req.file ? req.file.filename : "",
-        title: data.title,
-        day: data.day,
-        month: data.month,
-        contentDescription: data.contentDescription,
-        details: data.details,
+        image: req.file?.filename ?? "",
+        title: data?.title ?? "",
+        day: data?.day ?? "",
+        month: data?.month ?? "",
+        contentDescription: data?.contentDescription ?? "",
+        details: data?.details ?? "",
       };
       selectedData.blogs.push(newData);
       selectedData.save();

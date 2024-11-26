@@ -4,6 +4,7 @@ const OurValues = require("../../../models/CMSModels/About-Us/ourValues");
 const OurApproach = require("../../../models/CMSModels/About-Us/ourApproach");
 
 const { BACKEND_SERVER_PATH } = require("../../../config/config");
+const equalizeArrayLengths = require("../../equalizeController");
 
 const createIntroduction = async (req, res, next) => {
   const {
@@ -211,6 +212,16 @@ const getOurThematicArea = async (req, res, next) => {
 const getAllOurThematicArea = async (req, res, next) => {
   try {
     let ourThematicAreas = await OurThematicAreas.find();
+    let emptyThematicAreas = {
+      image: "",
+      title: "",
+      description: "",
+    };
+    ourThematicAreas = equalizeArrayLengths(
+      ourThematicAreas,
+      "thematicAreas",
+      emptyThematicAreas
+    );
     ourThematicAreas.forEach((ourthematicAreas) => {
       ourthematicAreas.thematicAreas = ourthematicAreas.thematicAreas.map(
         (item) => {
@@ -355,6 +366,11 @@ const getOurValues = async (req, res, next) => {
 const getAllOurValues = async (req, res, next) => {
   try {
     let ourValues = await OurValues.find();
+    let emptyOurValues = {
+      image: "",
+      title: "",
+    };
+    ourValues = equalizeArrayLengths(ourValues, "values", emptyOurValues);
     ourValues.forEach((ourvalues) => {
       ourvalues.values = ourvalues.values.map((item) => {
         if (item.image && item.image !== "") {
@@ -495,6 +511,11 @@ const getOurApproach = async (req, res, next) => {
 const getAllOurApproach = async (req, res, next) => {
   try {
     let ourApproach = await OurApproach.find();
+    let emptyApproach = {
+      image: "",
+      title: "",
+    };
+    ourApproach = equalizeArrayLengths(ourApproach, "approach", emptyApproach);
     ourApproach.forEach((ourapproach) => {
       ourapproach.approach = ourapproach.approach.map((item) => {
         if (item.image && item.image !== "") {

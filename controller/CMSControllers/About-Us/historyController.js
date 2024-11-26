@@ -1,5 +1,6 @@
 const { BACKEND_SERVER_PATH } = require("../../../config/config");
 const History = require("../../../models/CMSModels/About-Us/history");
+const equalizeArrayLengths = require("../../equalizeController");
 
 const createHistory = async (req, res, next) => {
   const { locale, history } = req.body;
@@ -18,6 +19,17 @@ const createHistory = async (req, res, next) => {
 const getAllHistory = async (req, res, next) => {
   try {
     let selectedHistory = await History.find();
+    let emptyHistory = {
+      image: "",
+      title: "",
+      subTitle: "",
+      description: "",
+    };
+    selectedHistory = equalizeArrayLengths(
+      selectedHistory,
+      "history",
+      emptyHistory
+    );
     selectedHistory.forEach((History) => {
       History.history = History.history.map((item) => {
         if (item.image && item.image !== "") {

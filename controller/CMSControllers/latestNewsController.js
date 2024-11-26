@@ -1,5 +1,6 @@
 const { BACKEND_SERVER_PATH } = require("../../config/config");
 const LatestNews = require("../../models/CMSModels/latestNews");
+const equalizeArrayLengths = require("../equalizeController");
 
 const createNews = async (req, res, next) => {
   const { locale, news } = req.body;
@@ -18,6 +19,15 @@ const createNews = async (req, res, next) => {
 const getAllNews = async (req, res, next) => {
   try {
     let latestNews = await LatestNews.find();
+    let emptyNews = {
+      image: "",
+      title: "",
+      day: "",
+      month: "",
+      contentDescription: "",
+      details: "",
+    };
+    latestNews = equalizeArrayLengths(latestNews, "news", emptyNews);
     latestNews.forEach((News) => {
       News.news = News.news.map((item) => {
         if (item.image && item.image !== "") {
@@ -60,7 +70,7 @@ const updateNews = async (req, res, next) => {
       }
 
       await selectedData.save();
-      res.status(201).json({ msg: "Work Updated Successfully" });
+      res.status(201).json({ msg: "News Updated Successfully" });
     } else {
       let newData = {
         image: req.file ? req.file.filename : "",
