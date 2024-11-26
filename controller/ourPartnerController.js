@@ -1,6 +1,7 @@
 const OurPartner = require("../models/ourPartner");
 
 const { BACKEND_SERVER_PATH } = require("../config/config");
+const equalizeArrayLengths = require("./equalizeController");
 
 // Our Partner
 const createOurPartner = async (req, res, next) => {
@@ -102,6 +103,12 @@ const getOurPartner = async (req, res, next) => {
 const getAllOurPartner = async (req, res, next) => {
   try {
     let ourPartner = await OurPartner.find();
+    let emptyPartner = {
+      image: "",
+      content: "",
+      type: "",
+    };
+    ourPartner = equalizeArrayLengths(ourPartner, "partner", emptyPartner);
     ourPartner.forEach((ourpartner) => {
       ourpartner.partner = ourpartner.partner.map((item) => {
         if (item.image && item.image !== "") {
