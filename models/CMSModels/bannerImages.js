@@ -22,6 +22,7 @@ const bannerImages = new mongoose.Schema({
   getInvolvedVacancy: String,
   getInvolvedVolunteer: String,
   getInvolvedDonate: String,
+  contactUs: String,
 });
 
 const BannerImages = mongoose.model("BannerImages", bannerImages);
