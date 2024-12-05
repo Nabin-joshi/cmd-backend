@@ -24,6 +24,7 @@ const createBannerImages = async (req, res, next) => {
     getInvolvedVacancy,
     getInvolvedVolunteer,
     getInvolvedDonate,
+    contactUs,
   } = req.body;
 
   let newData;
@@ -51,6 +52,7 @@ const createBannerImages = async (req, res, next) => {
       getInvolvedVacancy,
       getInvolvedVolunteer,
       getInvolvedDonate,
+      contactUs,
     });
     await newData.save();
     return res.status(201).json({ msg: "Banner Image Created successfully" });
@@ -126,6 +128,9 @@ const updateBannerImage = async (req, res, next) => {
           break;
         case "getInvolvedDonate":
           selectedData.getInvolvedDonate = req.file.filename;
+          break;
+        case "contactUs":
+          selectedData.contactUs = req.file.filename;
           break;
         default:
           res.status(400).json({ msg: "Invalid data name" });
@@ -301,6 +306,12 @@ const getBannerImages = async (req, res, next) => {
     if (bannerImage.getInvolvedDonate && bannerImage.getInvolvedDonate !== "") {
       bannerImage.getInvolvedDonate = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
         bannerImage.getInvolvedDonate
+      )}`;
+    }
+
+    if (bannerImage.contactUs && bannerImage.contactUs !== "") {
+      bannerImage.contactUs = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+        bannerImage.contactUs
       )}`;
     }
 
