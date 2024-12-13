@@ -1,6 +1,7 @@
 const { BACKEND_SERVER_PATH } = require("../../config/config");
 const LatestNews = require("../../models/CMSModels/latestNews");
 const equalizeArrayLengths = require("../equalizeController");
+const uuid = require("uuid");
 
 const createNews = async (req, res, next) => {
   const { locale, news } = req.body;
@@ -65,6 +66,7 @@ const updateNews = async (req, res, next) => {
       individualLatestNews.month = data.month;
       individualLatestNews.contentDescription = data.contentDescription;
       individualLatestNews.details = data.details;
+      individualLatestNews.navigationLink = data.navigationLink;
       if (req.file) {
         individualLatestNews.image = req.file.filename;
       }
@@ -79,6 +81,7 @@ const updateNews = async (req, res, next) => {
         month: data.month,
         contentDescription: data.contentDescription,
         details: data.details,
+        navigationLink: data.navigationLink ?? uuid.v6(),
       };
       selectedData.news.push(newData);
       selectedData.save();

@@ -30,6 +30,7 @@
     "nodemailer": "^6.9.13",
     "path": "^0.12.7",
     "request": "^2.88.2",
+    "uuid": "^11.0.3",
     "validator": "^13.11.0"
   },
   "devDependencies": {
