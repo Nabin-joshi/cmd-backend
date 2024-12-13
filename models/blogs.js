@@ -10,6 +10,13 @@ const blogs = new mongoose.Schema({
       month: String,
       contentDescription: String,
       details: String,
+      navigationLink: {
+        type: String,
+        default: function () {
+          return this._id;
+        },
+        unique: true,
+      },
     },
   ],
 });

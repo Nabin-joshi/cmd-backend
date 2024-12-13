@@ -2,6 +2,7 @@ const { isFQDN } = require("validator");
 const { BACKEND_SERVER_PATH } = require("../config/config");
 const Blogs = require("../models/blogs");
 const equalizeArrayLengths = require("./equalizeController");
+const uuid = require("uuid");
 
 const createBlogs = async (req, res, next) => {
   const { locale, blogs } = req.body;
@@ -68,6 +69,7 @@ const updateBlogs = async (req, res, next) => {
       individualBlogs.month = data.month;
       individualBlogs.contentDescription = data.contentDescription;
       individualBlogs.details = data.details;
+      individualBlogs.navigationLink = data.navigationLink;
       if (req.file) {
         individualBlogs.image = req.file.filename;
       }
@@ -82,6 +84,7 @@ const updateBlogs = async (req, res, next) => {
         month: data?.month ?? "",
         contentDescription: data?.contentDescription ?? "",
         details: data?.details ?? "",
+        navigationLink: data.navigationLink ?? uuid.v6(),
       };
       selectedData.blogs.push(newData);
       selectedData.save();
