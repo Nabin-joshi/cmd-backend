@@ -36,6 +36,13 @@ const storiesSchema = new mongoose.Schema({
         type: String,
         default: "",
       },
+      navigationLink: {
+        type: String,
+        default: function () {
+          return this._id;
+        },
+        unique: true,
+      },
     },
   ],
   readMoreBtnColor: {
