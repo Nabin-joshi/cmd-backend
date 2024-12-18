@@ -6,6 +6,7 @@ const ErrorHandler = require("../utils/errorHandler");
 const fs = require("fs");
 const { BACKEND_SERVER_PATH } = require("../config/config");
 const { deletepreviousPhotos } = require("../utils/fileHandling");
+const uuid = require("uuid");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -110,6 +111,7 @@ exports.updateStories = CatchAsyncError(async (req, res, next) => {
       matchedStory.person = object.person;
       matchedStory.personNepali = object.personNepali;
       matchedStory.display = object.display;
+      matchedStory.navigationLink = object.navigationLink || uuid.v4();
       Object.assign(matchedStory, { ...object, image: matchedStory.image });
 
       // Check if newImage field is present
