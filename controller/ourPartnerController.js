@@ -30,6 +30,7 @@ const updateOurPartner = async (req, res, next) => {
       (item) => item.id === data.id
     );
     if (individualPartner) {
+      individualPartner.name = data.name;
       individualPartner.content = data.content;
       individualPartner.type = data.type;
       individualPartner.display = data.display;
@@ -42,6 +43,7 @@ const updateOurPartner = async (req, res, next) => {
     } else {
       let newData = {
         image: req.file ? req.file.filename : "",
+        name: req.body.name || "",
         content: data.content,
         type: data.type,
         display: data.display,
@@ -107,6 +109,7 @@ const getAllOurPartner = async (req, res, next) => {
     let ourPartner = await OurPartner.find();
     let emptyPartner = {
       image: "",
+      name: "",
       content: "",
       type: "",
     };

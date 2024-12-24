@@ -7,6 +7,9 @@
 node_modules/
 dist/
 
+#Images and Videos
+public/
+
 # Compiled Java class files
 *.class
 

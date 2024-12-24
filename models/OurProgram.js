@@ -9,7 +9,7 @@ const ourProgramSchema = mongoose.Schema({
     type: String,
     default: "",
   },
-  strengthenCommunitySupportSystemNepali: {
+  transformingCommunitySupportSystemNepali: {
     type: String,
     default: "",
   },
@@ -30,7 +30,7 @@ const ourProgramSchema = mongoose.Schema({
     type: String,
     default: "",
   },
-  strengthenCommunitySupportSystem: {
+  transformingCommunitySupportSystem: {
     type: String,
     default: "",
   },

@@ -6,6 +6,7 @@ const ourPartnerSchema = new mongoose.Schema({
   partner: [
     {
       image: String,
+      name: String,
       content: String,
       type: { type: String, default: "Former" },
       display: {
