@@ -37,6 +37,7 @@ const blogRoutes = require("./blogRoutes");
 const navbarText = require("./CMS-Routes/navbarTextRoutes");
 const geoColorRoute = require("./CMS-Routes/geoColorRoutes");
 const searchRoute = require("./searchRoutes");
+const navLinkRoutes = require("./CMS-Routes/navLinksRoutes");
 
 // for login register and tokens
 router.use("/auth", authRoutes);
@@ -77,5 +78,6 @@ router.use("/blogs", blogRoutes);
 router.use("/navbartext", navbarText);
 router.use("/geocolor", geoColorRoute);
 router.use("/search", searchRoute);
+router.use("/navLink", navLinkRoutes);
 
 module.exports = router;

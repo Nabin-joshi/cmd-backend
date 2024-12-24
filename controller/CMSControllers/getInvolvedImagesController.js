@@ -1,5 +1,7 @@
 const { BACKEND_SERVER_PATH } = require("../../config/config");
 const GetInvolved = require("../../models/CMSModels/getInvolvedNavbarImages"); // Ensure this path is correct
+const { deleteImageIfExists } = require("../../utils/deleteExistingImages");
+const path = require("path");
 
 const createGetInvolvedImage = async (req, res, next) => {
   const { locale, procurement, vacancy, volunteer, donate } = req.body;
@@ -29,6 +31,13 @@ const updateGetInvolvedImage = async (req, res, next) => {
 
     if (req.file) {
       if (data.name === "procurement") {
+        if (
+          selectedData.procurement &&
+          selectedData.procurement !== req.file.filename
+        ) {
+          const oldLogoPath = selectedData.procurement;
+          await deleteImageIfExists(oldLogoPath);
+        }
         selectedData.procurement = req.file.filename;
       } else if (data.name === "vacancy") {
         selectedData.vacancy = req.file.filename;

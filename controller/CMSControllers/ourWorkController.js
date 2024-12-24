@@ -28,10 +28,13 @@ const updateWork = async (req, res, next) => {
     if (individualWork) {
       individualWork.header = data.header;
       individualWork.details = data.details;
-      if (req.file) {
-        individualWork.image = req.file.filename;
+      if (locale == "nep") {
+        individualWork.image = data.image;
+      } else {
+        if (req.file) {
+          individualWork.image = req.file.filename;
+        }
       }
-
       await selectedData.save();
       res.status(201).json({ msg: "Work Updated Successfully" });
     } else {
