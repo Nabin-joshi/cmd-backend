@@ -17,6 +17,11 @@ const latestNews = new mongoose.Schema({
         },
         unique: true,
       },
+      date: {
+        type: String,
+        default: () => new Date().toISOString().split("T")[0],
+      },
+      by: { type: String, default: "" },
     },
   ],
 });

@@ -11,7 +11,9 @@ const aboutUsIntroduction = new mongoose.Schema({
   ourGoalTitle: String,
   ourGoalDescription: String,
   imageTitle: String,
-  image: String,
+  visionIcon: { type: String, default: "" },
+  missionIcon: { type: String, default: "" },
+  goalIcon: { type: String, default: "" },
 });
 
 const AboutUsIntroduction = mongoose.model(

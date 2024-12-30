@@ -28,6 +28,7 @@ const getAllBlogs = async (req, res, next) => {
       month: "",
       contentDescription: "",
       details: "",
+      navigationLink: "",
     };
     latestBlogs = equalizeArrayLengths(latestBlogs, "blogs", emptyBlog);
     latestBlogs.forEach((Blogs) => {

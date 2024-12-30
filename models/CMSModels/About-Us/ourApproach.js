@@ -7,6 +7,7 @@ const ourApproach = new mongoose.Schema({
     {
       image: String,
       title: String,
+      description: { type: String, default: "" },
     },
   ],
 });

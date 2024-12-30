@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const navLinks = new mongoose.Schema({
   locale: String,
+  navTitle: { type: String, default: "" },
   navlink: [
     {
       name: { type: String, default: "" },
@@ -20,8 +21,8 @@ const navLinks = new mongoose.Schema({
         },
         unique: true,
       },
-      pageHeaderText: { type: String, default: "" },
-      pageHeaderImage: { type: String, default: "" },
+      pageBannerText: { type: String, default: "" },
+      pageBannerImage: { type: String, default: "" },
     },
   ],
 });

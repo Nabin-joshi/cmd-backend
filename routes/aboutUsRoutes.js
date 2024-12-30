@@ -96,7 +96,11 @@ aboutUsRouter.put(
     ".jpeg",
     ".png",
     ".gif",
-  ]).single("image"),
+  ]).fields([
+    { name: "visionIcon", maxCount: 1 },
+    { name: "missionIcon", maxCount: 1 },
+    { name: "goalIcon", maxCount: 1 },
+  ]),
   aboutUsIntroductionController.updateIntroductionData
 );
 

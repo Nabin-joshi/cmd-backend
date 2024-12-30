@@ -27,6 +27,8 @@ const getAllNews = async (req, res, next) => {
       month: "",
       contentDescription: "",
       details: "",
+      date: "",
+      by: "",
     };
     latestNews = equalizeArrayLengths(latestNews, "news", emptyNews);
     latestNews.forEach((News) => {
@@ -67,6 +69,8 @@ const updateNews = async (req, res, next) => {
       individualLatestNews.contentDescription = data.contentDescription;
       individualLatestNews.details = data.details;
       individualLatestNews.navigationLink = data.navigationLink;
+      individualLatestNews.date = data.date;
+      individualLatestNews.by = data.by;
       if (req.file) {
         individualLatestNews.image = req.file.filename;
       }
@@ -82,6 +86,8 @@ const updateNews = async (req, res, next) => {
         contentDescription: data.contentDescription,
         details: data.details,
         navigationLink: data.navigationLink ?? uuid.v6(),
+        date: data.date,
+        by: data.by,
       };
       selectedData.news.push(newData);
       selectedData.save();

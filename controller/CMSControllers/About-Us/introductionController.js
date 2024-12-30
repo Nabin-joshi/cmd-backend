@@ -18,7 +18,9 @@ const createIntroduction = async (req, res, next) => {
     ourGoalTitle,
     ourGoalDescription,
     imageTitle,
-    image,
+    visionIcon,
+    missionIcon,
+    goalIcon,
   } = req.body;
 
   let newIntroduction;
@@ -34,7 +36,9 @@ const createIntroduction = async (req, res, next) => {
       ourGoalTitle,
       ourGoalDescription,
       imageTitle,
-      image,
+      visionIcon,
+      missionIcon,
+      goalIcon,
     });
     await newIntroduction.save();
   } catch (error) {
@@ -49,10 +53,22 @@ const getIntroductionContent = async (req, res, next) => {
 
   try {
     const introductionData = await Introduction.findOne({ locale: locale });
-    if (introductionData.image && introductionData.image !== "") {
-      introductionData.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
-        introductionData.image
-      )}`;
+    if (introductionData) {
+      if (introductionData.visionIcon) {
+        introductionData.visionIcon = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          introductionData.visionIcon
+        )}`;
+      }
+      if (introductionData.missionIcon) {
+        introductionData.missionIcon = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          introductionData.missionIcon
+        )}`;
+      }
+      if (introductionData.goalIcon) {
+        introductionData.goalIcon = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          introductionData.goalIcon
+        )}`;
+      }
     }
     return res.status(201).json(introductionData);
   } catch (error) {
@@ -64,18 +80,23 @@ const getAllIntroductionContent = async (req, res, next) => {
   try {
     let selectedIntroduction = await Introduction.find();
     selectedIntroduction.forEach((introduction) => {
-      if (introduction.image && introduction.image !== "") {
-        introduction.image = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
-          introduction.image
+      if (introduction.visionIcon) {
+        introduction.visionIcon = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          introduction.visionIcon
         )}`;
-        return introduction;
-      } else {
-        return introduction;
+      }
+      if (introduction.missionIcon) {
+        introduction.missionIcon = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          introduction.missionIcon
+        )}`;
+      }
+      if (introduction.goalIcon) {
+        introduction.goalIcon = `${BACKEND_SERVER_PATH}/public/images/${encodeURIComponent(
+          introduction.goalIcon
+        )}`;
       }
     });
-    if (selectedIntroduction) {
-      return res.status(200).json(selectedIntroduction);
-    }
+    return res.status(200).json(selectedIntroduction);
   } catch (err) {
     return next(err);
   }
@@ -85,10 +106,8 @@ const updateIntroductionData = async (req, res, next) => {
   const getData = req.body;
   const locale = req.params.locale;
 
-  let selectedData;
-
   try {
-    selectedData = await Introduction.findOne({ locale: locale });
+    let selectedData = await Introduction.findOne({ locale: locale });
     if (selectedData) {
       selectedData.introductionTitle = getData.introductionTitle;
       selectedData.introductionDescription = getData.introductionDescription;
@@ -99,9 +118,20 @@ const updateIntroductionData = async (req, res, next) => {
       selectedData.ourGoalTitle = getData.ourGoalTitle;
       selectedData.ourGoalDescription = getData.ourGoalDescription;
       selectedData.imageTitle = getData.imageTitle;
-      if (req.file) {
-        selectedData.image = req.file.filename;
+
+      // Handle multiple file uploads
+      if (req.files) {
+        if (req.files.visionIcon && req.files.visionIcon[0]) {
+          selectedData.visionIcon = req.files.visionIcon[0].filename;
+        }
+        if (req.files.missionIcon && req.files.missionIcon[0]) {
+          selectedData.missionIcon = req.files.missionIcon[0].filename;
+        }
+        if (req.files.goalIcon && req.files.goalIcon[0]) {
+          selectedData.goalIcon = req.files.goalIcon[0].filename;
+        }
       }
+
       await selectedData.save();
       return res.status(201).json({ msg: "Introduction Updated Successfully" });
     }
@@ -441,6 +471,7 @@ const updateApproach = async (req, res, next) => {
     );
     if (individualApproach) {
       individualApproach.title = data.title;
+      individualApproach.description = data.description;
       if (req.file) {
         individualApproach.image = req.file.filename;
       }
@@ -514,6 +545,7 @@ const getAllOurApproach = async (req, res, next) => {
     let emptyApproach = {
       image: "",
       title: "",
+      description: "",
     };
     ourApproach = equalizeArrayLengths(ourApproach, "approach", emptyApproach);
     ourApproach.forEach((ourapproach) => {
