@@ -68,6 +68,7 @@ const updateNavLink = async (req, res, next) => {
       individualNavLinks.name = data.name ? data.name.trim() : "";
       individualNavLinks.content = data.content;
       individualNavLinks.pageBannerText = data.pageBannerText;
+      individualNavLinks.display = data.display;
       if (req.file) {
         individualNavLinks.pageBannerImage = req.file.filename;
       }
@@ -79,6 +80,7 @@ const updateNavLink = async (req, res, next) => {
         content: data?.content ?? "",
         pageBannerText: data?.pageBannerText ?? "",
         pageBannerImage: req.file ? req.file.filename : "",
+        display: data.display,
       };
       selectedData.navlink.push(newData);
       selectedData.save();
@@ -138,9 +140,11 @@ const getAllNavLinkHome = async (req, res, next) => {
   try {
     let navlinks = await NavLinks.findOne({ locale: locale });
     if (navlinks && navlinks.navlink) {
-      navlinks.navlink = navlinks.navlink.map(({ key, link, name }) => {
-        return { key, link, name };
-      });
+      navlinks.navlink = navlinks.navlink.map(
+        ({ key, link, name, display }) => {
+          return { key, link, name, display };
+        }
+      );
     }
     res.status(200).json(navlinks);
   } catch (error) {

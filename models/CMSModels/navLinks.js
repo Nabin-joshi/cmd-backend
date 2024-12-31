@@ -23,6 +23,10 @@ const navLinks = new mongoose.Schema({
       },
       pageBannerText: { type: String, default: "" },
       pageBannerImage: { type: String, default: "" },
+      display: {
+        type: Boolean,
+        default: true,
+      },
     },
   ],
 });
